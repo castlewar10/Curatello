@@ -4,7 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Cuaderno · Carnet</title>
+<title>Curatello</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="Curatello">
+<meta name="application-name" content="Curatello">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#1D4F7C">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&display=swap" rel="stylesheet">
@@ -897,6 +906,7 @@ document.addEventListener("change", e=>{
 document.addEventListener("keydown", e=>{ if(e.key==="Enter" && (e.target.id==="g-sec"||e.target.id==="g-sec2"||e.target.id==="g-name")) document.querySelector('[data-act="gateGo"]')?.click(); });
 
 /* =================== INICIO =================== */
+try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{}); }catch(e){}
 render();
 if(window.claude && typeof window.claude.use==="function"){
  window.claude.use("downloads").then(n=>{downloadsNs=n;}).catch(()=>{});
