@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Cuaderno · Carnet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EAF0F5; --paper:#FFFFFF; --ink:#132235; --muted:#55657A; --line:#CCD7E2; --soft:#F4F7FA;
+  --accent:#1D4F7C; --accent-ink:#FFFFFF; --accent-soft:#E2ECF5;
+  --amber:#A86412; --amber-soft:#FBF1E2; --danger:#B3261E;
+  --c-moral:#5257C2; --c-sexual:#C2185B; --c-sexiste:#D9741A; --c-discri:#00897B; --c-violence:#C62828; --c-repr:#3949AB; --c-droits:#7E6A00; --c-autre:#607D8B;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E151D; --paper:#16212D; --ink:#E4ECF4; --muted:#93A4B8; --line:#2A3846; --soft:#1C2835;
+    --accent:#8FC1EC; --accent-ink:#0C1824; --accent-soft:#1E3247; --amber:#F0B25E; --amber-soft:#33260F; --danger:#F28B82;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E151D; --paper:#16212D; --ink:#E4ECF4; --muted:#93A4B8; --line:#2A3846; --soft:#1C2835;
+  --accent:#8FC1EC; --accent-ink:#0C1824; --accent-soft:#1E3247; --amber:#F0B25E; --amber-soft:#33260F; --danger:#F28B82;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Lexend",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.55;font-weight:400}
+h1,h2,h3{font-weight:700;line-height:1.2;margin:0;letter-spacing:-.01em}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+.wrap{max-width:720px;margin:0 auto;padding:16px 16px 120px}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand .mark{width:36px;height:36px;border-radius:10px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.brand h1{font-size:1.15rem}
+.brand p{margin:0;font-size:.8rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-actions{display:flex;gap:8px;align-items:center}
+.lang{display:flex;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;background:var(--paper)}
+.lang button{border:0;background:none;padding:6px 11px;cursor:pointer;font-weight:700;font-size:.85rem;color:var(--muted)}
+.lang button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.icon-btn{border:1.5px solid var(--line);background:var(--paper);border-radius:999px;width:38px;height:38px;cursor:pointer;font-size:1rem}
+
+nav.tabs{display:grid;grid-template-columns:repeat(4,1fr);background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:4px;margin-bottom:16px}
+nav.tabs button{border:0;background:none;padding:9px 4px;cursor:pointer;color:var(--muted);font-weight:500;border-radius:10px;font-size:.88rem}
+nav.tabs button[aria-current="page"]{background:var(--accent-soft);color:var(--accent);font-weight:700}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1.5px solid var(--line);background:var(--paper);padding:11px 16px;border-radius:12px;cursor:pointer;font-weight:500;min-height:44px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.btn.danger{color:var(--danger);border-color:var(--danger)}
+.btn.small{padding:6px 12px;font-size:.86rem;min-height:36px;border-radius:10px}
+.btn.block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.linkbtn{border:0;background:none;color:var(--accent);text-decoration:underline;cursor:pointer;padding:6px 0;font-weight:500}
+
+.banner{background:var(--amber-soft);border:1.5px solid var(--amber);color:var(--ink);padding:12px 14px;border-radius:12px;margin-bottom:14px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;font-size:.92rem}
+.muted{color:var(--muted)}
+.small-txt{font-size:.86rem}
+.panel{background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:18px}
+.empty{background:var(--paper);border:1.5px dashed var(--line);border-radius:16px;padding:26px 18px;text-align:center}
+.empty h2{font-size:1.2rem;margin-bottom:8px}
+
+/* Login */
+.gate{max-width:420px;margin:6vh auto 0}
+.gate .mark{width:56px;height:56px;border-radius:16px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:700;margin-bottom:14px}
+.gate h1{font-size:1.5rem;margin-bottom:6px}
+.seg-tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--soft);border:1.5px solid var(--line);border-radius:12px;padding:4px;margin:18px 0}
+.seg-tabs button{border:0;background:none;padding:9px;border-radius:9px;cursor:pointer;font-weight:500;color:var(--muted)}
+.seg-tabs button[aria-pressed="true"]{background:var(--paper);color:var(--ink);font-weight:700;box-shadow:0 1px 2px rgba(19,34,53,.12)}
+.pw{position:relative}
+.pw input{padding-right:84px}
+.pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:1.5px solid var(--line);background:var(--paper);color:var(--accent);border-radius:8px;padding:5px 10px;cursor:pointer;font-weight:700;font-size:.82rem}
+.banner.resume{background:var(--accent-soft);border-color:var(--accent)}
+.warn-box{border-left:4px solid var(--amber);background:var(--amber-soft);padding:10px 12px;border-radius:8px;font-size:.88rem;margin:4px 0 14px}
+
+/* Filters + timeline */
+.filters{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px}
+.chip{flex-shrink:0;border:1.5px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:.85rem;display:inline-flex;align-items:center;gap:6px}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent);color:var(--accent-ink)}
+.dot{width:10px;height:10px;border-radius:3px;display:inline-block;flex-shrink:0}
+.list{list-style:none;margin:0;padding:0}
+.item{margin-bottom:10px}
+.card{display:grid;grid-template-columns:58px 1fr;gap:12px;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;text-align:left;width:100%}
+.card:hover{border-color:var(--accent)}
+.cal{background:var(--accent-soft);color:var(--accent);border-radius:10px;text-align:center;padding:6px 2px;align-self:start}
+.cal .d{font-size:1.4rem;font-weight:700;line-height:1.1}
+.cal .m{font-size:.72rem;font-weight:500}
+.card .who{font-weight:700}
+.card .desc{margin:2px 0 8px;color:var(--muted);font-size:.92rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:.74rem;padding:2px 9px;border-radius:6px;color:#fff;font-weight:500}
+.meta{display:flex;gap:12px;flex-wrap:wrap;font-size:.8rem;color:var(--muted);margin-top:8px}
+
+/* Form */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:6px}
+.steps span{height:6px;border-radius:3px;background:var(--line)}
+.steps span.on{background:var(--accent)}
+.step-label{font-size:.84rem;color:var(--muted);margin-bottom:12px}
+.panel h2{font-size:1.25rem;margin-bottom:14px}
+.field{margin-bottom:16px}
+.field > label,.field > .lbl{display:block;font-weight:700;margin-bottom:6px}
+.hint{font-size:.84rem;color:var(--muted);margin:-2px 0 6px}
+input[type=text],input[type=password],input[type=date],input[type=time],input[type=month],textarea{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--soft);font-size:16px}
+textarea{min-height:140px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.check{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.92rem}
+.check input{width:20px;height:20px;accent-color:var(--accent)}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg label{border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;background:var(--soft);font-size:.92rem}
+.seg input{accent-color:var(--accent)}
+.seg label:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.cat-opt{display:grid;grid-template-columns:auto 1fr;gap:10px;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer;background:var(--soft)}
+.cat-opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.cat-opt input{width:20px;height:20px;margin-top:2px;accent-color:var(--accent)}
+.cat-opt b{display:flex;align-items:center;gap:8px}
+.cat-opt small{display:block;color:var(--muted);font-size:.84rem;margin-top:2px}
+.cat-opt .ref{font-size:.76rem;color:var(--muted);font-style:italic}
+.witness{border:1.5px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;background:var(--soft)}
+.witness .row2{margin-bottom:8px}
+.form-nav{display:flex;justify-content:space-between;gap:10px;margin-top:18px;flex-wrap:wrap}
+.err{color:var(--danger);font-size:.88rem;margin-top:6px}
+.tr-box{border:1.5px dashed var(--accent);border-radius:12px;padding:10px;margin-top:10px;background:var(--accent-soft)}
+.tr-box label{font-size:.84rem;font-weight:700;display:block;margin-bottom:6px}
+.tr-box textarea{background:var(--paper);min-height:110px}
+
+.drop{border:2px dashed var(--line);border-radius:12px;padding:16px;text-align:center;background:var(--soft)}
+.files{list-style:none;padding:0;margin:12px 0 0}
+.files li{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:8px;background:var(--paper)}
+.files .badge{width:44px;height:44px;border-radius:8px;background:var(--soft);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:var(--muted)}
+.files .fname{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.9rem}
+
+/* Detail */
+.detail dt{font-size:.8rem;color:var(--muted);margin-top:14px}
+.detail dd{margin:2px 0 0;white-space:pre-wrap}
+.detail .fr{border-left:3px solid var(--accent);padding-left:10px;margin-top:8px;color:var(--ink)}
+.stamp{font-size:.8rem;color:var(--muted);border-top:1.5px solid var(--line);margin-top:18px;padding-top:10px}
+.media{display:grid;gap:10px;margin-top:6px}
+.media figure{margin:0;border:1.5px solid var(--line);border-radius:12px;overflow:hidden;background:var(--soft)}
+.media img,.media video{width:100%;max-height:360px;object-fit:contain;display:block;background:#000}
+.media audio{width:100%;display:block;padding:8px}
+.media .ph{height:70px;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--muted)}
+.media figcaption{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;font-size:.8rem;border-top:1.5px solid var(--line);background:var(--paper)}
+.media figcaption span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Report */
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}
+.stat{background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:12px}
+.stat .n{font-size:1.6rem;font-weight:700;line-height:1.1;color:var(--accent)}
+.stat .l{font-size:.82rem;color:var(--muted)}
+.bars{list-style:none;padding:0;margin:0}
+.bars li{display:grid;grid-template-columns:minmax(110px,1fr) 1.6fr 28px;align-items:center;gap:10px;margin-bottom:8px;font-size:.88rem}
+.bars .track{height:10px;background:var(--soft);border-radius:5px;overflow:hidden}
+.bars .fill{display:block;height:100%;border-radius:5px}
+.section{margin-top:14px}
+.section h3{font-size:1.02rem;margin-bottom:10px}
+.sec-h{font-size:1.05rem;margin:22px 0 4px}
+.help li{margin-bottom:10px}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:12px;font-size:.9rem;z-index:30;max-width:90vw;text-align:center}
+.fab{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:10;box-shadow:0 8px 20px rgba(19,52,85,.3);border-radius:16px}
+@media (max-width:520px){ .row2{grid-template-columns:1fr} nav.tabs button{font-size:.8rem} }
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><p class="muted">…</p></div>
+<div id="toast" class="toast" hidden role="status"></div>
+<input type="file" id="f-files" multiple hidden>
+<input type="file" id="f-restore" accept=".json,application/json" hidden>
+
+<script>
+(() => {
+"use strict";
+
+/* =================== TEXTOS =================== */
+const T = {
+ es:{
+  appName:"Cuaderno", notebookOf:"Cuaderno de",
+  gateTitle:"Tu cuaderno privado", gateText:"Todo se guarda cifrado en este aparato. Solo se abre con tu nombre y tu palabra secreta.",
+  open:"Abrir", create:"Crear", showPw:"Ver", hidePw:"Ocultar", showPwA:"Mostrar la palabra secreta", hidePwA:"Ocultar la palabra secreta", name:"Tu nombre", secret:"Palabra secreta", secret2:"Repite la palabra secreta",
+  openBtn:"Abrir mi cuaderno", createBtn:"Crear mi cuaderno",
+  createWarn:"Elige una palabra que no olvides. Si la olvidas, nadie puede recuperar tus datos.",
+  restoreLink:"Restaurar desde una copia de seguridad",
+  errName:"Escribe tu nombre.", errSecretLen:"La palabra secreta debe tener al menos 6 caracteres.", errMatch:"Las dos palabras no coinciden.",
+  errNoBook:"No hay ningún cuaderno con ese nombre en este aparato.", errExists:"Ya existe un cuaderno con ese nombre. Usa «Abrir».", errWrong:"Palabra secreta incorrecta.",
+  errNoIdb:"Este navegador no permite guardar datos. Prueba con Chrome o Safari, fuera del modo incógnito.",
+  opening:"Abriendo…", lock:"Cerrar el cuaderno", locked:"Cuaderno cerrado",
+  tabList:"Registro", tabReport:"Informe", tabBackup:"Copia", tabHelp:"Ayuda",
+  add:"Registrar un incidente",
+  backupDue:"Hace más de 7 días que no haces una copia de seguridad.", backupNever:"Todavía no has hecho ninguna copia de seguridad.", backupNow:"Hacer copia ahora",
+  emptyTitle:"Todavía no hay incidentes", emptyText:"Cuando ocurra algo, regístralo lo antes posible: los detalles se olvidan rápido.",
+  all:"Todos", noMatch:"Ningún incidente en esta categoría.",
+  step:"Paso", of:"de", s1:"Cuándo y quién", s2:"Qué pasó", s3:"Testigos y pruebas", s4:"Clasificación",
+  date:"Fecha", time:"Hora", timeApprox:"Hora aproximada", place:"Lugar", placeHint:"Ej.: cocina, sala, vestuario, WhatsApp…",
+  author:"¿De quién provino?", authorHint:"Nombre o descripción de la persona.",
+  role:"Su posición", roles:{superior:"Superior / gerente",colleague:"Compañero/a",client:"Cliente",other:"Otro"},
+  desc:"Describe lo que pasó", descHint:"Escribe las palabras exactas si las recuerdas, entre comillas. Qué pasó antes y después.",
+  impact:"¿Cómo te afectó? (opcional)", impactHint:"Emociones, consecuencias en tu trabajo o tu salud, días de baja…",
+  writeLang:"¿En qué idioma escribes?", trTo:{fr:"Traducir todo al francés",es:"Traducir todo al español"}, translating:"Traduciendo…", trVersion:{fr:"Versión en francés (puedes corregirla)",es:"Versión en español (puedes corregirla)"}, includeOrig:"Incluir también el texto original", originalL:{es:"Original en español",fr:"Original en francés"},
+  trNote:"La traducción envía este texto a Claude para traducirlo.", trFail:"No se pudo traducir. Inténtalo de nuevo más tarde.", trEmpty:"Escribe primero el texto.",
+  witnesses:"Testigos", witnessHint:"Personas que vieron u oyeron algo.",
+  wName:"Nombre", wContact:"Contacto (opcional)", wWilling:"¿Aceptaría testificar?", willing:{yes:"Sí",no:"No",unknown:"No lo sé"},
+  addWitness:"Añadir testigo", remove:"Quitar",
+  files:"Pruebas (archivos)", filesHint:"Fotos, capturas, PDF, audios (notas de voz), vídeos. Máx. 20 MB por archivo.",
+  pickFiles:"Añadir archivos", saving:"Guardando…", tooLarge:"Archivo demasiado grande (máx. 20 MB)",
+  reported:"¿Ya lo informaste a alguien?", reportedTo:"¿A quién?", reportedToHint:"RR. HH., CSE, médico del trabajo…", reportedDate:"Fecha del aviso",
+  cats:"Tipo de hecho", catsHint:"Puedes marcar varios. Si dudas, marca el más parecido: se puede cambiar.",
+  back:"Atrás", next:"Siguiente", save:"Guardar", cancel:"Cancelar",
+  pendingNew:"Tienes un incidente sin terminar.", pendingEdit:"Tienes cambios sin terminar en un incidente.", pendingAt:"Último guardado:", resume:"Continuar", discard:"Descartar", discardConfirm:"Tienes un incidente sin terminar. ¿Descartarlo?", discardDone:"Borrador descartado", cancelConfirm:"¿Descartar lo que has escrito?", draftKept:"Tu borrador está guardado", needDate:"Indica la fecha.", needMonth:"Indica el mes.", needDesc:"Describe lo que pasó.", whenL:"¿Cuándo pasó?", dateModes:{exact:"Sé la fecha",month:"Solo sé el mes",unknown:"No recuerdo la fecha"}, monthL:"Mes", approxMonth:"(mes aproximado)", noDate:"Fecha no recordada", noDateShort:"sin fecha", clue:"¿Algo que ayude a situarlo? (opcional)", clueHint:"Ej.: «antes de Navidad», «cuando cambiaron el planning», «la semana del inventario».", clueL:"Referencia temporal", undatedTitle:"Hechos sin fecha precisa", undatedHint:"Si encuentras la fecha más tarde (WhatsApp, fotos, plannings), edita el incidente y añádela.", undatedNote:"La persona no recuerda la fecha exacta de estos hechos. Se indica, cuando existe, una referencia temporal.", undatedCount:"Sin fecha precisa",
+  saved:"Incidente guardado", deleted:"Incidente borrado",
+  edit:"Editar", del:"Borrar", confirmDel:"¿Borrar este incidente y sus archivos? No se puede deshacer.", close:"Volver",
+  registered:"Registrado el", updated:"Última modificación", contributedBy:"Aportado por",
+  notSpecified:"No indicado", unknownAuthor:"Persona no indicada", download:"Descargar", loadingFile:"Abriendo archivo…",
+  reportTitle:"Informe cronológico", reportIntro:"Resumen de tus incidentes, por fecha, para entregar a un/a abogado/a, al sindicato, a la inspección o al médico del trabajo.",
+  reportLang:"Idioma del informe", total:"Incidentes", period:"Periodo", withWitness:"Con testigos", withFiles:"Con pruebas",
+  byCat:"Por tipo de hecho", byAuthor:"Por persona (repetición)", legalRefs:"Referencias legales",
+  dlReport:"Descargar informe", printHint:"Abre el informe descargado y usa «Imprimir → Guardar como PDF».",
+  noData:"Registra al menos un incidente para generar el informe.", times:"vez", timesP:"veces",
+  attachments:"Archivos adjuntos", witnessesL:"Testigos", reportedL:"Aviso dado a",
+  genOn:"Informe generado el", declaration:"Notas tomadas por la persona interesada en la fecha indicada en cada registro.",
+  origNote:{es:"(texto original en español)",fr:"(texto original en francés)"}, trDisclaimer:"Algunos textos se tradujeron con una herramienta automática. En caso de duda, prevalece el texto original.",
+  backupTitle:"Copia de seguridad", backupText:"La copia es un archivo cifrado con tu palabra secreta. Guárdalo fuera del móvil: en tu Drive o enviado a tu email.",
+  lastBackup:"Última copia", never:"Nunca", dlBackup:"Descargar copia de seguridad",
+  restoreTitle:"Restaurar una copia", restoreText:"Al cargar una copia, el contenido de este cuaderno en este aparato se reemplaza por completo por el de la copia. No se mezcla nada.",
+  pickBackup:"Elegir archivo de copia", backupOf:"Copia del cuaderno de", backupDate:"hecha el",
+  restoreBtn:"Reemplazar con esta copia", confirmReplace:"Esto reemplazará TODO el contenido actual de este cuaderno en este aparato. ¿Continuar?",
+  restored:"Copia restaurada", badBackup:"Este archivo no es una copia válida del cuaderno.",
+  dlFail:"No se pudo descargar", declined:"Descarga cancelada", dlBlocked:"Este tipo de archivo no se puede descargar aquí, pero puedes verlo o escucharlo en la app.",
+  helpTitle:"Cómo registrar bien",
+  help:[
+   "<b>Escribe pronto.</b> Lo ideal es el mismo día. La fecha de registro se guarda sola.",
+   "<b>Hechos, no opiniones.</b> «Me dijo: “…”» pesa más que «fue desagradable».",
+   "<b>Una prueba por hecho.</b> Capturas con fecha y nombre visibles, mensajes, notas de voz, plannings, fotos.",
+   "<b>La repetición cuenta.</b> El acoso moral se reconoce por actos repetidos: registra también lo «pequeño».",
+   "<b>Copia cada semana</b> y guárdala fuera del móvil.",
+  ],
+  whereTitle:"Dónde pedir ayuda",
+  where:[
+   "<b>Médecin du travail</b>: confidencial, puede constatar el impacto en tu salud.",
+   "<b>CSE / représentants du personnel</b> y el <b>référent harcèlement sexuel</b> si existe.",
+   "<b>Inspection du travail</b> (DREETS) de tu departamento.",
+   "<b>Défenseur des droits</b> (3928) para discriminación.",
+   "<b>AVFT</b>: asociación especializada en violencias sexuales y sexistas en el trabajo.",
+   "Un <b>sindicato</b> o un/a <b>abogado/a</b> laboralista antes de cualquier acción.",
+   "Si estás en peligro: <b>17</b> o <b>112</b>.",
+  ],
+  privacyTitle:"Tu privacidad",
+  privacy:[
+   "Los datos viven solo en este aparato y están cifrados.",
+   "El cuaderno se cierra solo tras 5 minutos sin uso. Si estabas escribiendo, lo escrito se guarda y puedes continuar después.",
+   "Cada persona usa su propio cuaderno: nadie puede leer ni modificar el de otra.",
+  ],
+  disclaimer:"Esta app te ayuda a organizar los hechos. No sustituye el consejo de un/a profesional del derecho.",
+  months:["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"],
+ },
+ fr:{
+  appName:"Carnet", notebookOf:"Carnet de",
+  gateTitle:"Ton carnet privé", gateText:"Tout est enregistré chiffré sur cet appareil. Il ne s'ouvre qu'avec ton nom et ton mot secret.",
+  open:"Ouvrir", create:"Créer", showPw:"Voir", hidePw:"Masquer", showPwA:"Afficher le mot secret", hidePwA:"Masquer le mot secret", name:"Ton nom", secret:"Mot secret", secret2:"Répète le mot secret",
+  openBtn:"Ouvrir mon carnet", createBtn:"Créer mon carnet",
+  createWarn:"Choisis un mot que tu n'oublieras pas. Si tu l'oublies, personne ne peut récupérer tes données.",
+  restoreLink:"Restaurer depuis une sauvegarde",
+  errName:"Écris ton nom.", errSecretLen:"Le mot secret doit faire au moins 6 caractères.", errMatch:"Les deux mots ne correspondent pas.",
+  errNoBook:"Aucun carnet à ce nom sur cet appareil.", errExists:"Un carnet existe déjà à ce nom. Utilise « Ouvrir ».", errWrong:"Mot secret incorrect.",
+  errNoIdb:"Ce navigateur ne permet pas d'enregistrer des données. Essaie Chrome ou Safari, hors navigation privée.",
+  opening:"Ouverture…", lock:"Fermer le carnet", locked:"Carnet fermé",
+  tabList:"Journal", tabReport:"Rapport", tabBackup:"Sauvegarde", tabHelp:"Aide",
+  add:"Enregistrer un incident",
+  backupDue:"Ta dernière sauvegarde date de plus de 7 jours.", backupNever:"Tu n'as encore fait aucune sauvegarde.", backupNow:"Sauvegarder maintenant",
+  emptyTitle:"Aucun incident pour l'instant", emptyText:"Quand quelque chose arrive, note-le au plus vite : les détails s'oublient vite.",
+  all:"Tous", noMatch:"Aucun incident dans cette catégorie.",
+  step:"Étape", of:"sur", s1:"Quand et qui", s2:"Ce qui s'est passé", s3:"Témoins et preuves", s4:"Qualification",
+  date:"Date", time:"Heure", timeApprox:"Heure approximative", place:"Lieu", placeHint:"Ex. : cuisine, salle, vestiaire, WhatsApp…",
+  author:"De qui cela venait-il ?", authorHint:"Nom ou description de la personne.",
+  role:"Sa position", roles:{superior:"Supérieur / manager",colleague:"Collègue",client:"Client",other:"Autre"},
+  desc:"Décris ce qui s'est passé", descHint:"Écris les mots exacts si tu t'en souviens, entre guillemets. Ce qui s'est passé avant et après.",
+  impact:"Comment cela t'a affecté·e ? (facultatif)", impactHint:"Émotions, conséquences sur ton travail ou ta santé, arrêt maladie…",
+  writeLang:"Dans quelle langue écris-tu ?", trTo:{fr:"Tout traduire en français",es:"Tout traduire en espagnol"}, translating:"Traduction…", trVersion:{fr:"Version française (modifiable)",es:"Version espagnole (modifiable)"}, includeOrig:"Inclure aussi le texte original", originalL:{es:"Original en espagnol",fr:"Original en français"},
+  trNote:"La traduction envoie ce texte à Claude pour le traduire.", trFail:"Traduction impossible. Réessaie plus tard.", trEmpty:"Écris d'abord le texte.",
+  witnesses:"Témoins", witnessHint:"Personnes ayant vu ou entendu quelque chose.",
+  wName:"Nom", wContact:"Contact (facultatif)", wWilling:"Accepterait de témoigner ?", willing:{yes:"Oui",no:"Non",unknown:"Je ne sais pas"},
+  addWitness:"Ajouter un témoin", remove:"Retirer",
+  files:"Preuves (fichiers)", filesHint:"Photos, captures, PDF, audios (messages vocaux), vidéos. 20 Mo max. par fichier.",
+  pickFiles:"Ajouter des fichiers", saving:"Enregistrement…", tooLarge:"Fichier trop lourd (20 Mo max.)",
+  reported:"L'as-tu déjà signalé ?", reportedTo:"À qui ?", reportedToHint:"RH, CSE, médecin du travail…", reportedDate:"Date du signalement",
+  cats:"Type de fait", catsHint:"Tu peux en cocher plusieurs. En cas de doute, choisis le plus proche : c'est modifiable.",
+  back:"Retour", next:"Suivant", save:"Enregistrer", cancel:"Annuler",
+  pendingNew:"Tu as un incident non terminé.", pendingEdit:"Tu as des modifications non terminées sur un incident.", pendingAt:"Dernier enregistrement :", resume:"Reprendre", discard:"Abandonner", discardConfirm:"Tu as un incident non terminé. L'abandonner ?", discardDone:"Brouillon abandonné", cancelConfirm:"Abandonner ce que tu as écrit ?", draftKept:"Ton brouillon est gardé", needDate:"Indique la date.", needMonth:"Indique le mois.", needDesc:"Décris ce qui s'est passé.", whenL:"Quand est-ce arrivé ?", dateModes:{exact:"Je connais la date",month:"Je connais le mois",unknown:"Je ne me souviens pas de la date"}, monthL:"Mois", approxMonth:"(mois approximatif)", noDate:"Date non retenue", noDateShort:"sans date", clue:"Un repère pour le situer ? (facultatif)", clueHint:"Ex. : « avant Noël », « quand le planning a changé », « la semaine de l'inventaire ».", clueL:"Repère temporel", undatedTitle:"Faits sans date précise", undatedHint:"Si tu retrouves la date plus tard (WhatsApp, photos, plannings), modifie l'incident pour l'ajouter.", undatedNote:"La personne ne se souvient pas de la date exacte de ces faits. Un repère temporel est indiqué lorsqu'il existe.", undatedCount:"Sans date précise",
+  saved:"Incident enregistré", deleted:"Incident supprimé",
+  edit:"Modifier", del:"Supprimer", confirmDel:"Supprimer cet incident et ses fichiers ? C'est définitif.", close:"Retour",
+  registered:"Enregistré le", updated:"Dernière modification", contributedBy:"Rédigé par",
+  notSpecified:"Non indiqué", unknownAuthor:"Personne non indiquée", download:"Télécharger", loadingFile:"Ouverture du fichier…",
+  reportTitle:"Rapport chronologique", reportIntro:"Synthèse de tes incidents, par date, à remettre à un·e avocat·e, au syndicat, à l'inspection ou au médecin du travail.",
+  reportLang:"Langue du rapport", total:"Incidents", period:"Période", withWitness:"Avec témoins", withFiles:"Avec preuves",
+  byCat:"Par type de fait", byAuthor:"Par personne (répétition)", legalRefs:"Références juridiques",
+  dlReport:"Télécharger le rapport", printHint:"Ouvre le rapport téléchargé puis « Imprimer → Enregistrer en PDF ».",
+  noData:"Enregistre au moins un incident pour générer le rapport.", times:"fois", timesP:"fois",
+  attachments:"Pièces jointes", witnessesL:"Témoins", reportedL:"Signalé à",
+  genOn:"Rapport généré le", declaration:"Notes prises par la personne concernée à la date indiquée sur chaque fiche.",
+  origNote:{es:"(texte original en espagnol)",fr:"(texte original en français)"}, trDisclaimer:"Certains textes ont été traduits avec un outil automatique. En cas de doute, le texte original fait foi.",
+  backupTitle:"Sauvegarde", backupText:"La sauvegarde est un fichier chiffré avec ton mot secret. Garde-le hors du téléphone : sur ton Drive ou envoyé par e-mail.",
+  lastBackup:"Dernière sauvegarde", never:"Jamais", dlBackup:"Télécharger la sauvegarde",
+  restoreTitle:"Restaurer une sauvegarde", restoreText:"En chargeant une sauvegarde, le contenu de ce carnet sur cet appareil est entièrement remplacé par celui de la sauvegarde. Rien n'est fusionné.",
+  pickBackup:"Choisir le fichier de sauvegarde", backupOf:"Sauvegarde du carnet de", backupDate:"faite le",
+  restoreBtn:"Remplacer par cette sauvegarde", confirmReplace:"Cela remplacera TOUT le contenu actuel de ce carnet sur cet appareil. Continuer ?",
+  restored:"Sauvegarde restaurée", badBackup:"Ce fichier n'est pas une sauvegarde valide du carnet.",
+  dlFail:"Téléchargement impossible", declined:"Téléchargement annulé", dlBlocked:"Ce type de fichier ne peut pas être téléchargé ici, mais tu peux le voir ou l'écouter dans l'app.",
+  helpTitle:"Bien noter les faits",
+  help:[
+   "<b>Écris vite.</b> Idéalement le jour même. La date d'enregistrement est gardée automatiquement.",
+   "<b>Des faits, pas des opinions.</b> « Il m'a dit : “…” » pèse plus que « c'était désagréable ».",
+   "<b>Une preuve par fait.</b> Captures avec date et nom visibles, messages, vocaux, plannings, photos.",
+   "<b>La répétition compte.</b> Le harcèlement moral se caractérise par des agissements répétés : note aussi les « petites » choses.",
+   "<b>Sauvegarde chaque semaine</b> et garde le fichier hors du téléphone.",
+  ],
+  whereTitle:"Où demander de l'aide",
+  where:[
+   "<b>Médecin du travail</b> : confidentiel, peut constater l'impact sur ta santé.",
+   "<b>CSE / représentants du personnel</b> et le <b>référent harcèlement sexuel</b> s'il existe.",
+   "<b>Inspection du travail</b> (DREETS) de ton département.",
+   "<b>Défenseur des droits</b> (3928) pour les discriminations.",
+   "<b>AVFT</b> : association spécialisée dans les violences sexuelles et sexistes au travail.",
+   "Un <b>syndicat</b> ou un·e <b>avocat·e</b> en droit du travail avant toute démarche.",
+   "En cas de danger : <b>17</b> ou <b>112</b>.",
+  ],
+  privacyTitle:"Ta confidentialité",
+  privacy:[
+   "Les données restent uniquement sur cet appareil, chiffrées.",
+   "Le carnet se ferme tout seul après 5 minutes sans activité. Si tu étais en train d'écrire, le brouillon est gardé et tu peux reprendre plus tard.",
+   "Chaque personne utilise son propre carnet : personne ne peut lire ni modifier celui d'une autre.",
+  ],
+  disclaimer:"Cette app t'aide à organiser les faits. Elle ne remplace pas le conseil d'un·e professionnel·le du droit.",
+  months:["janv","févr","mars","avr","mai","juin","juil","août","sept","oct","nov","déc"],
+ }
+};
+
+/* =================== CATEGORÍAS =================== */
+const CATS = [
+ {id:"moral", color:"var(--c-moral)", hex:"#5257C2", ref:"Code du travail, art. L1152-1",
+  es:["Acoso moral","Actos repetidos que degradan tus condiciones de trabajo y pueden afectar tu dignidad, tu salud o tu futuro profesional: humillaciones, críticas constantes, aislamiento, tareas imposibles."],
+  fr:["Harcèlement moral","Agissements répétés qui dégradent tes conditions de travail et peuvent porter atteinte à ta dignité, ta santé ou ton avenir professionnel : humiliations, critiques constantes, mise à l'écart, tâches impossibles."]},
+ {id:"sexual", color:"var(--c-sexual)", hex:"#C2185B", ref:"Code du travail, art. L1153-1",
+  es:["Acoso sexual","Comentarios o comportamientos de connotación sexual o sexista repetidos, o una presión grave (aunque sea una sola vez) para obtener un acto sexual."],
+  fr:["Harcèlement sexuel","Propos ou comportements à connotation sexuelle ou sexiste répétés, ou pression grave (même unique) dans le but d'obtenir un acte de nature sexuelle."]},
+ {id:"sexiste", color:"var(--c-sexiste)", hex:"#D9741A", ref:"Code du travail, art. L1142-2-1",
+  es:["Actuación sexista","Comportamiento ligado al sexo de la persona que atenta contra su dignidad o crea un ambiente intimidante, hostil, degradante u ofensivo. Basta con una vez."],
+  fr:["Agissement sexiste","Agissement lié au sexe d'une personne, qui porte atteinte à sa dignité ou crée un environnement intimidant, hostile, dégradant, humiliant ou offensant. Un seul fait suffit."]},
+ {id:"discri", color:"var(--c-discri)", hex:"#00897B", ref:"Code du travail, art. L1132-1",
+  es:["Discriminación","Trato desfavorable por tu origen, nacionalidad, sexo, edad, salud, embarazo, idioma, apariencia, etc."],
+  fr:["Discrimination","Traitement défavorable en raison de l'origine, la nationalité, le sexe, l'âge, l'état de santé, la grossesse, la langue, l'apparence, etc."]},
+ {id:"violence", color:"var(--c-violence)", hex:"#C62828", ref:"Code pénal, art. 222-7 s. et 222-17 ; Code du travail, art. L4121-1",
+  es:["Violencia o amenazas","Agresión física, amenazas, intimidación. El empleador tiene la obligación de proteger tu seguridad y tu salud."],
+  fr:["Violences ou menaces","Agression physique, menaces, intimidation. L'employeur a une obligation de sécurité envers ta santé."]},
+ {id:"repr", color:"var(--c-repr)", hex:"#3949AB", ref:"Code du travail, art. L1152-2, L1153-2, L1153-3",
+  es:["Represalias","Sanción, cambio de horario o peor trato por haber denunciado o testificado sobre un acoso. Está prohibido."],
+  fr:["Représailles","Sanction, changement d'horaires ou mauvais traitement pour avoir dénoncé ou témoigné d'un harcèlement. C'est interdit."]},
+ {id:"droits", color:"var(--c-droits)", hex:"#7E6A00", ref:"Code du travail ; Convention collective IDCC 1501",
+  es:["Incumplimiento de derechos laborales","Horarios, pausas, salario, descansos, vacaciones… Si se repite de forma dirigida, puede formar parte de un acoso moral."],
+  fr:["Non-respect des droits","Horaires, pauses, salaire, repos, congés… Répété de façon ciblée, cela peut participer à un harcèlement moral."]},
+ {id:"autre", color:"var(--c-autre)", hex:"#607D8B", ref:"",
+  es:["Otro","Algo que no encaja en las categorías anteriores."],
+  fr:["Autre","Un fait qui n'entre pas dans les catégories précédentes."]},
+];
+const catById = Object.fromEntries(CATS.map(c=>[c.id,c]));
+const MAX = 20*1024*1024;
+const LOCK_MS = 5*60*1000;
+const WEEK = 7*24*3600*1000;
+
+/* =================== ESTADO =================== */
+const S = {
+ lang:(()=>{try{return localStorage.getItem("cq-lang")||"es"}catch(e){return "es"}})(),
+ view:"gate", gateMode:"open", gateErr:"", busy:false,
+ profile:null, key:null, incidents:[],
+ filter:"all", draft:null, editingId:null, step:1, errors:{}, saving:0,
+ newFiles:[], removedFiles:[], detailId:null, reportLang:null,
+ restore:null, restoreErr:"", g:{name:"",sec:"",sec2:"",rsec:""}, showPw:false, pending:null, trAll:false, trErr:"", includeOrig:true,
+};
+const t = k => T[S.lang][k];
+let downloadsNs=null, sampleNs=null;
+const urlCache = new Map();
+
+/* =================== UTILIDADES =================== */
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const rid = p => p+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const norm = s => s.normalize("NFC").trim().toLowerCase().replace(/\s+/g," ");
+const fmtDate = (iso,lang=S.lang) => { if(!iso) return ""; const [y,m,d]=iso.split("-"); return `${+d} ${T[lang].months[+m-1]} ${y}`; };
+const fmtStamp = (iso,lang=S.lang) => { if(!iso) return ""; try{return new Date(iso).toLocaleString(lang==="fr"?"fr-FR":"es-ES",{dateStyle:"long",timeStyle:"short"})}catch(e){return iso} };
+const sortKey = i => i.dateMode==="month" ? (i.month||"")+"-15T12:00" : (i.date||"")+"T"+(i.time||"00:00");
+const isDated = i => i.dateMode!=="unknown";
+const fmtMonth = (ym,lang=S.lang) => { if(!ym) return ""; const [y,m]=ym.split("-"); return `${T[lang].months[+m-1]} ${y}`; };
+const periodStr = (i,lang=S.lang) => !i ? "" : i.dateMode==="month" ? fmtMonth(i.month,lang) : fmtDate(i.date,lang);
+const fmtWhen = (i,lang=S.lang) => i.dateMode==="unknown" ? T[lang].noDate : i.dateMode==="month" ? `${fmtMonth(i.month,lang)} ${T[lang].approxMonth}` : `${fmtDate(i.date,lang)}${i.time?`, ${i.timeApprox?"≈ ":""}${esc(i.time)}`:""}`;
+const extOf = n => (String(n).split(".").pop()||"").toLowerCase();
+const kind = (type,name) => { if(/^image\//.test(type)) return "img"; if(/^video\//.test(type)) return "video"; if(/^audio\//.test(type)||["opus","ogg","m4a","mp3","aac","wav","amr"].includes(extOf(name))) return "audio"; return "other"; };
+let toastTimer;
+function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.hidden=true,3200);}
+
+const b64 = buf => { const b=new Uint8Array(buf); let s=""; for(let i=0;i<b.length;i+=0x8000) s+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000)); return btoa(s); };
+const unb64 = s => { const bin=atob(s); const u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); return u; };
+const enc = new TextEncoder(), dec = new TextDecoder();
+
+/* =================== CIFRADO =================== */
+async function deriveKey(secret, salt){
+ const base = await crypto.subtle.importKey("raw", enc.encode(secret.normalize("NFC")), "PBKDF2", false, ["deriveKey"]);
+ return crypto.subtle.deriveKey({name:"PBKDF2", salt, iterations:250000, hash:"SHA-256"}, base, {name:"AES-GCM", length:256}, false, ["encrypt","decrypt"]);
+}
+async function encryptBytes(key, bytes){ const iv=crypto.getRandomValues(new Uint8Array(12)); const ct=await crypto.subtle.encrypt({name:"AES-GCM",iv},key,bytes); return {iv, ct:new Uint8Array(ct)}; }
+async function decryptBytes(key, box){ return new Uint8Array(await crypto.subtle.decrypt({name:"AES-GCM",iv:box.iv},key,box.ct)); }
+const encryptJSON = (key,obj) => encryptBytes(key, enc.encode(JSON.stringify(obj)));
+const decryptJSON = async (key,box) => JSON.parse(dec.decode(await decryptBytes(key,box)));
+async function checkKey(key, ver){ try{ return dec.decode(await decryptBytes(key,ver))==="cuaderno-ok"; }catch(e){ return false; } }
+
+/* =================== INDEXEDDB =================== */
+let idbP=null;
+function idb(){ if(!idbP) idbP=new Promise((res,rej)=>{ try{ const r=indexedDB.open("cuaderno-incidentes",1); r.onupgradeneeded=()=>r.result.createObjectStore("kv"); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }catch(e){rej(e)} }); return idbP; }
+async function tx(mode, fn){ const db=await idb(); return new Promise((res,rej)=>{ const x=db.transaction("kv",mode); const st=x.objectStore("kv"); let out; const r=fn(st); if(r) r.onsuccess=()=>{out=r.result}; x.oncomplete=()=>res(out); x.onerror=()=>rej(x.error); x.onabort=()=>rej(x.error); }); }
+const kvGet = k => tx("readonly", st=>st.get(k));
+const kvSet = (k,v) => tx("readwrite", st=>st.put(v,k));
+const kvDel = k => tx("readwrite", st=>st.delete(k));
+const kvKeys = () => tx("readonly", st=>st.getAllKeys());
+
+/* =================== CUADERNO =================== */
+async function createBook(name, secret){
+ const id=norm(name);
+ if(await kvGet("p:"+id)) throw "exists";
+ const salt=crypto.getRandomValues(new Uint8Array(16));
+ const key=await deriveKey(secret,salt);
+ const ver=await encryptBytes(key, enc.encode("cuaderno-ok"));
+ const profile={id, name:name.trim(), salt, ver, createdAt:new Date().toISOString(), lastBackup:null};
+ await kvSet("p:"+id, profile);
+ await kvSet("d:"+id, await encryptJSON(key,{incidents:[]}));
+ return {profile,key};
+}
+async function openBook(name, secret){
+ const id=norm(name);
+ const profile=await kvGet("p:"+id);
+ if(!profile) throw "nobook";
+ const key=await deriveKey(secret, profile.salt);
+ if(!(await checkKey(key, profile.ver))) throw "wrong";
+ return {profile,key};
+}
+function normInc(i){ i={...i}; if(!i.origLang){ i.origLang="es"; i.description_tr=i.description_fr||""; i.impact_tr=i.impact_fr||""; } delete i.description_fr; delete i.impact_fr; if(!i.dateMode) i.dateMode="exact"; return i; }
+async function loadIncidents(){ const box=await kvGet("d:"+S.profile.id); S.incidents = (box ? (await decryptJSON(S.key,box)).incidents||[] : []).map(normInc); }
+async function writeIncidents(){ await kvSet("d:"+S.profile.id, await encryptJSON(S.key,{incidents:S.incidents})); }
+const fileKey = fid => "f:"+S.profile.id+":"+fid;
+async function putFile(file){ const fid=rid("file-"); const box=await encryptBytes(S.key, new Uint8Array(await file.arrayBuffer())); await kvSet(fileKey(fid), box); return fid; }
+async function getFileBlob(meta){ const box=await kvGet(fileKey(meta.id)); if(!box) return null; return new Blob([await decryptBytes(S.key,box)], {type:meta.type||"application/octet-stream"}); }
+async function fileUrl(meta){ if(urlCache.has(meta.id)) return urlCache.get(meta.id); const b=await getFileBlob(meta); if(!b) return null; const u=URL.createObjectURL(b); urlCache.set(meta.id,u); return u; }
+
+const draftKey = () => "dr:"+S.profile.id;
+function draftSnapshot(){ return {draft:S.draft, step:S.step, editingId:S.editingId, newFiles:S.newFiles, removedFiles:S.removedFiles, savedAt:new Date().toISOString()}; }
+async function persistDraft(){ if(!S.key||!S.draft||!S.profile) return; await kvSet(draftKey(), await encryptJSON(S.key, draftSnapshot())); }
+let dTimer;
+function queueDraftSave(){ clearTimeout(dTimer); dTimer=setTimeout(()=>{ persistDraft().catch(()=>{}); }, 700); }
+async function flushDraft(){ clearTimeout(dTimer); try{ await persistDraft(); }catch(e){} }
+async function clearDraftStore(){ clearTimeout(dTimer); S.pending=null; try{ await kvDel(draftKey()); }catch(e){} }
+async function loadPending(){ try{ const box=await kvGet(draftKey()); S.pending = box ? await decryptJSON(S.key,box) : null; }catch(e){ S.pending=null; } }
+async function parkDraft(){ if(!S.draft) return; await flushDraft(); S.pending=draftSnapshot(); S.draft=null; S.newFiles=[]; S.removedFiles=[]; }
+async function discardPending(){ const p=S.pending; if(p){ for(const fid of p.newFiles||[]){ try{await kvDel(fileKey(fid))}catch(e){} } } await clearDraftStore(); }
+async function takeOverPending(){ if(!S.pending) return true; if(!confirm(t("discardConfirm"))) return false; await discardPending(); return true; }
+document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="hidden" && S.draft) flushDraft(); });
+
+async function lock(msg){
+ if(S.draft) await flushDraft();
+ for(const u of urlCache.values()) URL.revokeObjectURL(u);
+ urlCache.clear();
+ S.profile=null; S.key=null; S.incidents=[]; S.draft=null; S.newFiles=[]; S.removedFiles=[]; S.pending=null; clearTimeout(dTimer); S.g={name:"",sec:"",sec2:"",rsec:""}; S.showPw=false; S.view="gate"; S.gateMode="open"; S.gateErr=""; S.restore=null;
+ render(); if(msg) toast(msg);
+}
+let lockTimer;
+function bumpLock(){ clearTimeout(lockTimer); if(S.key) lockTimer=setTimeout(()=>lock(t("locked")), LOCK_MS); }
+["pointerdown","keydown"].forEach(ev=>document.addEventListener(ev,bumpLock,{passive:true}));
+
+/* =================== COPIA / RESTAURACIÓN =================== */
+const box64 = b => ({iv:b64(b.iv), ct:b64(b.ct)});
+const unbox64 = b => ({iv:unb64(b.iv), ct:unb64(b.ct)});
+async function buildBackup(){
+ const files={};
+ const prefix="f:"+S.profile.id+":";
+ for(const k of await kvKeys()){ if(typeof k==="string" && k.startsWith(prefix)){ files[k.slice(prefix.length)] = box64(await kvGet(k)); } }
+ return JSON.stringify({app:"cuaderno-incidentes", v:1, name:S.profile.name, exportedAt:new Date().toISOString(), salt:b64(S.profile.salt), ver:box64(S.profile.ver), data:box64(await kvGet("d:"+S.profile.id)), files});
+}
+async function doBackup(){
+ S.busy=true; render();
+ try{
+  const json=await buildBackup();
+  const ok=await saveFile(`cuaderno-copia-${new Date().toISOString().slice(0,10)}.json`, new Blob([json],{type:"application/json"}));
+  if(ok){ S.profile.lastBackup=new Date().toISOString(); await kvSet("p:"+S.profile.id, S.profile); }
+ }catch(e){ toast(t("dlFail")); }
+ S.busy=false; render();
+}
+async function readBackupFile(file){
+ try{
+  const o=JSON.parse(await file.text());
+  if(o.app!=="cuaderno-incidentes"||!o.salt||!o.ver||!o.data) throw 0;
+  S.restore={obj:o}; S.restoreErr="";
+ }catch(e){ S.restore=null; S.restoreErr=t("badBackup"); }
+ render();
+}
+async function applyRestore(secret){
+ const o=S.restore.obj;
+ const salt=unb64(o.salt), ver=unbox64(o.ver);
+ const key=await deriveKey(secret,salt);
+ if(!(await checkKey(key,ver))) throw "wrong";
+ const id=norm(o.name);
+ const existing=await kvGet("p:"+id);
+ if(existing && !confirm(t("confirmReplace"))) throw "cancel";
+ // Reemplazo total: borrar todo lo de este cuaderno
+ const prefix="f:"+id+":";
+ for(const k of await kvKeys()){ if(typeof k==="string" && k.startsWith(prefix)) await kvDel(k); }
+ await kvDel("dr:"+id); S.pending=null; S.draft=null;
+ const profile={id, name:o.name, salt, ver, createdAt:existing?.createdAt||new Date().toISOString(), lastBackup:o.exportedAt||null};
+ await kvSet("p:"+id, profile);
+ await kvSet("d:"+id, unbox64(o.data));
+ for(const [fid,b] of Object.entries(o.files||{})) await kvSet(prefix+fid, unbox64(b));
+ for(const u of urlCache.values()) URL.revokeObjectURL(u); urlCache.clear();
+ S.profile=profile; S.key=key; await loadIncidents();
+ S.restore=null; S.view="list"; bumpLock();
+}
+
+/* =================== DESCARGAS =================== */
+async function saveFile(filename, blob){
+ if(downloadsNs){
+  try{ await downloadsNs.save({filename, data:blob}); return true; }
+  catch(e){ toast(e&&e.code==="declined"?t("declined"):(e&&e.code==="rejected_extension"?t("dlBlocked"):t("dlFail"))); return false; }
+ }
+ try{ const u=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=u; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),4000); return true; }
+ catch(e){ toast(t("dlFail")); return false; }
+}
+
+/* =================== TRADUCCIÓN =================== */
+const LNAME={es:"español",fr:"francés"};
+const otherL = l => l==="es"?"fr":"es";
+async function translateAll(){
+ const d=S.draft, src=d.origLang||"es", dst=otherL(src);
+ const fields=["description","impact"].filter(f=>(d[f]||"").trim());
+ if(!fields.length){ S.trErr=t("trEmpty"); render(); return; }
+ S.trAll=true; S.trErr=""; render();
+ try{
+  for(const f of fields){
+   const prompt = "Traduce al "+LNAME[dst]+" el siguiente texto escrito en "+LNAME[src]+". Es un relato personal de un incidente en el trabajo, escrito en primera persona. Conserva exactamente el sentido, los hechos, las fechas y el tono. Las citas entre comillas deben traducirse fielmente y mantener las comillas. No añadas, no resumas, no suavices, no comentes. Devuelve únicamente la traducción, sin ningún texto adicional.\n\nTexto:\n" + d[f].trim();
+   const r = await sampleNs(prompt, {modelTier:"default", cache:false});
+   d[f+"_tr"]=(r.text||"").trim();
+  }
+ }catch(e){ if(e && e.code==="not_granted") sampleNs=null; S.trErr=t("trFail"); }
+ S.trAll=false; render();
+}
+
+/* =================== RENDER =================== */
+function pwField(id,label,key,auto){
+ return `<div class="field"><label for="${id}">${label}</label><div class="pw"><input type="${S.showPw?"text":"password"}" class="secret" id="${id}" data-g="${key}" value="${esc(S.g[key])}" autocomplete="${auto}" autocapitalize="off" autocorrect="off" spellcheck="false"><button type="button" data-act="togglePw" aria-pressed="${S.showPw}" aria-label="${esc(S.showPw?t("hidePwA"):t("showPwA"))}">${S.showPw?t("hidePw"):t("showPw")}</button></div></div>`;
+}
+function render(){
+ document.documentElement.lang=S.lang;
+ const app=document.getElementById("app");
+ const langSw = `<div class="lang" role="group" aria-label="Idioma / Langue"><button data-act="lang" data-v="es" aria-pressed="${S.lang==="es"}">ES</button><button data-act="lang" data-v="fr" aria-pressed="${S.lang==="fr"}">FR</button></div>`;
+ if(S.view==="gate"||S.view==="restore"&&!S.key){ app.innerHTML = `<div style="display:flex;justify-content:flex-end">${langSw}</div>` + (S.view==="gate"?viewGate():viewRestore()); return; }
+ const head = `<header class="top"><div class="brand"><div class="mark" aria-hidden="true">${esc((S.profile.name[0]||"C").toUpperCase())}</div><div style="min-width:0"><h1>${t("appName")}</h1><p>${t("notebookOf")} ${esc(S.profile.name)}</p></div></div>
+  <div class="top-actions">${langSw}<button class="icon-btn" data-act="lock" title="${esc(t("lock"))}" aria-label="${esc(t("lock"))}">🔒</button></div></header>`;
+ const isList=["list","form","detail"].includes(S.view);
+ const tabs = `<nav class="tabs">${[["list","tabList"],["report","tabReport"],["backup","tabBackup"],["help","tabHelp"]].map(([v,k])=>`<button data-act="tab" data-v="${v}" ${(S.view===v||(v==="list"&&isList)||(v==="backup"&&S.view==="restore"))?'aria-current="page"':""}>${t(k)}</button>`).join("")}</nav>`;
+ let body="";
+ if(S.view==="list") body=viewList();
+ else if(S.view==="form") body=viewForm();
+ else if(S.view==="detail") body=viewDetail();
+ else if(S.view==="report") body=viewReport();
+ else if(S.view==="backup") body=viewBackup();
+ else if(S.view==="restore") body=viewRestore();
+ else if(S.view==="help") body=viewHelp();
+ const fab = S.view==="list" ? `<button class="btn primary fab" data-act="new">＋ ${t("add")}</button>` : "";
+ app.innerHTML = head + tabs + body + fab;
+ if(S.view==="detail") hydrateMedia();
+ if(S.view==="form" && S.draft) queueDraftSave();
+}
+
+function viewGate(){
+ const c=S.gateMode==="create";
+ return `<section class="gate"><div class="mark" aria-hidden="true">✎</div><h1>${t("gateTitle")}</h1><p class="muted">${t("gateText")}</p>
+  <div class="seg-tabs" role="group"><button data-act="gateMode" data-v="open" aria-pressed="${!c}">${t("open")}</button><button data-act="gateMode" data-v="create" aria-pressed="${c}">${t("create")}</button></div>
+  <div class="field"><label for="g-name">${t("name")}</label><input type="text" id="g-name" data-g="name" value="${esc(S.g.name)}" autocomplete="username" autocapitalize="words"></div>
+  ${pwField("g-sec",t("secret"),"sec",c?"new-password":"current-password")}
+  ${c?`${pwField("g-sec2",t("secret2"),"sec2","new-password")}<div class="warn-box">⚠️ ${t("createWarn")}</div>`:""}
+  ${S.gateErr?`<p class="err" role="alert">${esc(S.gateErr)}</p>`:""}
+  <button class="btn primary block" data-act="gateGo" ${S.busy?"disabled":""}>${S.busy?t("opening"):(c?t("createBtn"):t("openBtn"))}</button>
+  <p style="text-align:center;margin-top:14px"><button class="linkbtn" data-act="toRestore">${t("restoreLink")}</button></p></section>`;
+}
+
+function viewRestore(){
+ const r=S.restore;
+ const inner = `<h2>${t("restoreTitle")}</h2><div class="warn-box">${t("restoreText")}</div>
+  ${!r?`<button class="btn block" data-act="pickBackup">📂 ${t("pickBackup")}</button>`:`<p><b>${t("backupOf")} ${esc(r.obj.name)}</b><br><span class="muted small-txt">${t("backupDate")} ${fmtStamp(r.obj.exportedAt)}</span></p>
+   ${pwField("r-sec",t("secret"),"rsec","current-password")}
+   <button class="btn primary block" data-act="doRestore" ${S.busy?"disabled":""}>${S.busy?t("opening"):t("restoreBtn")}</button>`}
+  ${S.restoreErr?`<p class="err" role="alert">${esc(S.restoreErr)}</p>`:""}
+  <p style="text-align:center;margin-top:14px"><button class="linkbtn" data-act="${S.key?"tab":"toGate"}" data-v="backup">${t("cancel")}</button></p>`;
+ return S.key ? `<section class="panel">${inner}</section>` : `<section class="gate">${inner}</section>`;
+}
+
+function tagsHtml(cats){return `<div class="tags">${(cats||[]).map(id=>{const c=catById[id];return c?`<span class="tag" style="background:${c.color}">${esc(c[S.lang][0])}</span>`:""}).join("")}</div>`}
+
+function backupBanner(){
+ const lb=S.profile.lastBackup;
+ if(lb && Date.now()-new Date(lb).getTime()<WEEK) return "";
+ if(!lb && !S.incidents.length) return "";
+ return `<div class="banner"><span>💾 ${lb?t("backupDue"):t("backupNever")}</span><button class="btn small" data-act="backupNow" ${S.busy?"disabled":""}>${t("backupNow")}</button></div>`;
+}
+
+function viewList(){
+ let out="";
+ if(S.pending){ const p=S.pending; out+=`<div class="banner resume"><span>✏️ ${p.editingId?t("pendingEdit"):t("pendingNew")}<br><span class="muted small-txt">${t("pendingAt")} ${fmtStamp(p.savedAt)}</span></span><div class="btn-row"><button class="btn small primary" data-act="resume">${t("resume")}</button><button class="btn small" data-act="discard">${t("discard")}</button></div></div>`; }
+ out+=backupBanner();
+ if(!S.incidents.length) return out+`<div class="empty"><h2>${t("emptyTitle")}</h2><p class="muted">${t("emptyText")}</p><button class="btn primary" data-act="new">＋ ${t("add")}</button></div>`;
+ const used=CATS.filter(c=>S.incidents.some(i=>(i.categories||[]).includes(c.id)));
+ out+=`<div class="filters" role="group"><button class="chip" data-act="filter" data-v="all" aria-pressed="${S.filter==="all"}">${t("all")} (${S.incidents.length})</button>${used.map(c=>`<button class="chip" data-act="filter" data-v="${c.id}" aria-pressed="${S.filter===c.id}"><span class="dot" style="background:${c.color}"></span>${esc(c[S.lang][0])}</button>`).join("")}</div>`;
+ const list=[...S.incidents].sort((a,b)=>sortKey(b).localeCompare(sortKey(a))).filter(i=>S.filter==="all"||(i.categories||[]).includes(S.filter));
+ if(!list.length) return out+`<p class="muted">${t("noMatch")}</p>`;
+ const card = i => { let cd, cm;
+  if(i.dateMode==="unknown"){ cd="?"; cm=t("noDateShort"); }
+  else if(i.dateMode==="month"){ const [y,m]=(i.month||"-").split("-"); cd="≈"; cm=`${m?T[S.lang].months[+m-1]:""}<br>${y||""}`; }
+  else { const [y,m,d]=(i.date||"--").split("-"); cd=+d||"?"; cm=`${m?T[S.lang].months[+m-1]:""}<br>${y||""}`; }
+  return `<li class="item"><button class="card" data-act="detail" data-id="${esc(i.id)}"><div class="cal"><div class="d">${cd}</div><div class="m">${cm}</div></div>
+   <div style="min-width:0"><div class="who">${esc(i.authorName||t("unknownAuthor"))}</div><p class="desc">${esc(i.origLang!==S.lang&&i.description_tr?i.description_tr:i.description)}</p>${tagsHtml(i.categories)}
+   <div class="meta">${i.time?`<span>🕐 ${i.timeApprox?"≈ ":""}${esc(i.time)}</span>`:""}${i.dateClue?`<span>🧭 ${esc(i.dateClue)}</span>`:""}${i.place?`<span>📍 ${esc(i.place)}</span>`:""}${(i.witnesses||[]).length?`<span>👥 ${i.witnesses.length}</span>`:""}${(i.files||[]).length?`<span>📎 ${i.files.length}</span>`:""}${i.description_tr?`<span>🌐</span>`:""}</div></div></button></li>`; };
+ const dated=list.filter(isDated), undated=list.filter(i=>!isDated(i));
+ out += dated.length ? `<ul class="list">${dated.map(card).join("")}</ul>` : "";
+ if(undated.length) out += `<h3 class="sec-h">${t("undatedTitle")} (${undated.length})</h3><p class="muted small-txt" style="margin-top:0">${t("undatedHint")}</p><ul class="list">${undated.map(card).join("")}</ul>`;
+ return out;
+}
+
+function blankDraft(){const now=new Date();const p=n=>String(n).padStart(2,"0");return {id:null,dateMode:"exact",month:"",dateClue:"",date:`${now.getFullYear()}-${p(now.getMonth()+1)}-${p(now.getDate())}`,time:`${p(now.getHours())}:${p(now.getMinutes())}`,timeApprox:true,place:"",authorName:"",authorRole:"",origLang:S.lang,description:"",description_tr:"",impact:"",impact_tr:"",witnesses:[],categories:[],files:[],reportedDone:false,reportedTo:"",reportedDate:""}}
+
+function trBox(f){
+ const d=S.draft, dst=otherL(d.origLang||"es");
+ if(!d[f+"_tr"] && !(S.trAll && (d[f]||"").trim())) return "";
+ return `<div class="tr-box"><label for="f-${f}_tr">${t("trVersion")[dst]}</label><textarea id="f-${f}_tr" data-bind="${f}_tr" ${S.trAll?"disabled":""}>${esc(d[f+"_tr"])}</textarea></div>`;
+}
+
+function viewForm(){
+ const d=S.draft, st=S.step, names=[t("s1"),t("s2"),t("s3"),t("s4")];
+ let f="";
+ if(st===1){
+  f=`<div class="field"><span class="lbl">${t("whenL")}</span><div class="seg">${["exact","month","unknown"].map(k=>`<label><input type="radio" name="dmode" data-bind="dateMode" value="${k}" ${d.dateMode===k?"checked":""}>${t("dateModes")[k]}</label>`).join("")}</div></div>
+   ${d.dateMode==="exact"?`<div class="row2"><div class="field"><label for="f-date">${t("date")} *</label><input type="date" id="f-date" data-bind="date" value="${esc(d.date)}">${S.errors.date?`<div class="err">${t("needDate")}</div>`:""}</div>
+   <div class="field"><label for="f-time">${t("time")}</label><input type="time" id="f-time" data-bind="time" value="${esc(d.time)}"><label class="check"><input type="checkbox" data-bind="timeApprox" ${d.timeApprox?"checked":""}>${t("timeApprox")}</label></div></div>`:""}
+   ${d.dateMode==="month"?`<div class="field"><label for="f-month">${t("monthL")} *</label><input type="month" id="f-month" data-bind="month" value="${esc(d.month)}" placeholder="2026-03">${S.errors.month?`<div class="err">${t("needMonth")}</div>`:""}</div>`:""}
+   ${d.dateMode!=="exact"?`<div class="field"><label for="f-clue">${t("clue")}</label><p class="hint">${t("clueHint")}</p><input type="text" id="f-clue" data-bind="dateClue" value="${esc(d.dateClue)}"></div>`:""}
+   <div class="field"><label for="f-place">${t("place")}</label><p class="hint">${t("placeHint")}</p><input type="text" id="f-place" data-bind="place" value="${esc(d.place)}"></div>
+   <div class="field"><label for="f-author">${t("author")}</label><p class="hint">${t("authorHint")}</p><input type="text" id="f-author" data-bind="authorName" value="${esc(d.authorName)}"></div>
+   <div class="field"><span class="lbl">${t("role")}</span><div class="seg">${Object.entries(t("roles")).map(([k,v])=>`<label><input type="radio" name="role" data-bind="authorRole" value="${k}" ${d.authorRole===k?"checked":""}>${v}</label>`).join("")}</div></div>`;
+ } else if(st===2){
+  f=`<div class="field"><span class="lbl">${t("writeLang")}</span><div class="seg"><label><input type="radio" name="olang" data-bind="origLang" value="es" ${d.origLang==="es"?"checked":""}>Español</label><label><input type="radio" name="olang" data-bind="origLang" value="fr" ${d.origLang==="fr"?"checked":""}>Français</label></div></div>
+   <div class="field"><label for="f-desc">${t("desc")} *</label><p class="hint">${t("descHint")}</p><textarea id="f-desc" data-bind="description" style="min-height:190px">${esc(d.description)}</textarea>${S.errors.description?`<div class="err">${t("needDesc")}</div>`:""}${trBox("description")}</div>
+   <div class="field"><label for="f-imp">${t("impact")}</label><p class="hint">${t("impactHint")}</p><textarea id="f-imp" data-bind="impact" style="min-height:90px">${esc(d.impact)}</textarea>${trBox("impact")}</div>
+   ${sampleNs?`<button class="btn block" data-act="translateAll" ${S.trAll?"disabled":""}>🌐 ${S.trAll?t("translating"):t("trTo")[otherL(d.origLang||"es")]}</button><p class="muted small-txt">ℹ️ ${t("trNote")}</p>`:""}${S.trErr?`<p class="err">${esc(S.trErr)}</p>`:""}`;
+ } else if(st===3){
+  f=`<div class="field"><span class="lbl">${t("witnesses")}</span><p class="hint">${t("witnessHint")}</p>
+   ${d.witnesses.map((w,i)=>`<div class="witness"><div class="row2"><div><label class="hint" for="w-n${i}">${t("wName")}</label><input type="text" id="w-n${i}" data-w="${i}" data-wf="name" value="${esc(w.name)}"></div><div><label class="hint" for="w-c${i}">${t("wContact")}</label><input type="text" id="w-c${i}" data-w="${i}" data-wf="contact" value="${esc(w.contact)}"></div></div>
+    <div class="hint">${t("wWilling")}</div><div class="seg" style="margin-bottom:8px">${Object.entries(t("willing")).map(([k,v])=>`<label><input type="radio" name="wil${i}" data-w="${i}" data-wf="willing" value="${k}" ${w.willing===k?"checked":""}>${v}</label>`).join("")}</div>
+    <button class="btn small" data-act="rmWitness" data-i="${i}">${t("remove")}</button></div>`).join("")}
+   <button class="btn small" data-act="addWitness">＋ ${t("addWitness")}</button></div>
+   <div class="field"><span class="lbl">${t("files")}</span><p class="hint">${t("filesHint")}</p>
+   <div class="drop"><button class="btn" data-act="pick">📎 ${t("pickFiles")}</button>${S.saving?`<p class="muted">${t("saving")} (${S.saving})</p>`:""}</div>
+   <ul class="files">${d.files.map((fl,i)=>`<li><span class="badge">${{img:"🖼️",video:"🎬",audio:"🎙️"}[kind(fl.type,fl.name)]||esc(extOf(fl.name).toUpperCase().slice(0,4))}</span><span class="fname">${esc(fl.name)}</span><button class="btn small" data-act="rmFile" data-i="${i}">${t("remove")}</button></li>`).join("")}</ul></div>
+   <div class="field"><label class="check" style="font-weight:700"><input type="checkbox" data-bind="reportedDone" ${d.reportedDone?"checked":""}>${t("reported")}</label>
+   ${d.reportedDone?`<div class="row2" style="margin-top:10px"><div><label class="hint" for="f-rto">${t("reportedTo")}</label><input type="text" id="f-rto" data-bind="reportedTo" value="${esc(d.reportedTo)}" placeholder="${esc(t("reportedToHint"))}"></div><div><label class="hint" for="f-rd">${t("reportedDate")}</label><input type="date" id="f-rd" data-bind="reportedDate" value="${esc(d.reportedDate)}"></div></div>`:""}</div>`;
+ } else {
+  f=`<div class="field"><span class="lbl">${t("cats")}</span><p class="hint">${t("catsHint")}</p>
+   ${CATS.map(c=>`<label class="cat-opt"><input type="checkbox" data-cat="${c.id}" ${d.categories.includes(c.id)?"checked":""}><span><b><span class="dot" style="background:${c.color}"></span>${esc(c[S.lang][0])}</b><small>${esc(c[S.lang][1])}</small>${c.ref?`<span class="ref">${esc(c.ref)}</span>`:""}</span></label>`).join("")}</div>`;
+ }
+ const blocked = S.saving || S.trAll;
+ return `<section class="panel" aria-labelledby="form-h">
+  <div class="steps" aria-hidden="true">${[1,2,3,4].map(n=>`<span class="${n<=st?"on":""}"></span>`).join("")}</div>
+  <div class="step-label">${t("step")} ${st} ${t("of")} 4</div><h2 id="form-h">${names[st-1]}</h2>${f}
+  <div class="form-nav"><div class="btn-row">${st>1?`<button class="btn" data-act="prev">${t("back")}</button>`:`<button class="btn" data-act="cancel">${t("cancel")}</button>`}</div>
+   <div class="btn-row">${st<4?`<button class="btn" data-act="save" ${blocked?"disabled":""}>${t("save")}</button><button class="btn primary" data-act="next">${t("next")}</button>`:`<button class="btn primary" data-act="save" ${blocked?"disabled":""}>${t("save")}</button>`}</div></div></section>`;
+}
+
+function viewDetail(){
+ const i=S.incidents.find(x=>x.id===S.detailId);
+ if(!i){S.view="list";return viewList();}
+ const ns=t("notSpecified");
+ return `<section class="panel detail">
+  <div class="btn-row" style="justify-content:space-between;margin-bottom:12px"><button class="btn small" data-act="tab" data-v="list">${t("close")}</button>
+   <div class="btn-row"><button class="btn small" data-act="edit" data-id="${esc(i.id)}">${t("edit")}</button><button class="btn small danger" data-act="del" data-id="${esc(i.id)}">${t("del")}</button></div></div>
+  <h2>${fmtWhen(i)}</h2>
+  <div style="margin-top:10px">${tagsHtml(i.categories)}</div>
+  <dl>
+   ${i.dateClue?`<dt>${t("clueL")}</dt><dd>${esc(i.dateClue)}</dd>`:""}
+   <dt>${t("author")}</dt><dd>${esc(i.authorName||ns)}${i.authorRole?` (${esc(t("roles")[i.authorRole]||"")})`:""}</dd>
+   <dt>${t("place")}</dt><dd>${esc(i.place||ns)}</dd>
+   <dt>${t("desc")}</dt><dd>${esc(i.description)}${i.description_tr?`<div class="fr"><b class="small-txt">${otherL(i.origLang).toUpperCase()}</b> ${esc(i.description_tr)}</div>`:""}</dd>
+   ${i.impact?`<dt>${t("impact")}</dt><dd>${esc(i.impact)}${i.impact_tr?`<div class="fr"><b class="small-txt">${otherL(i.origLang).toUpperCase()}</b> ${esc(i.impact_tr)}</div>`:""}</dd>`:""}
+   <dt>${t("witnesses")}</dt><dd>${(i.witnesses||[]).length?i.witnesses.map(w=>`• ${esc(w.name||"?")}${w.contact?`, ${esc(w.contact)}`:""}${w.willing?` (${esc(t("wWilling"))} ${esc(t("willing")[w.willing])})`:""}`).join("\n"):ns}</dd>
+   ${i.reportedDone?`<dt>${t("reportedL")}</dt><dd>${esc(i.reportedTo||ns)}${i.reportedDate?`, ${fmtDate(i.reportedDate)}`:""}</dd>`:""}
+   <dt>${t("files")}</dt><dd>${(i.files||[]).length?`<div class="media">${i.files.map(f=>`<figure data-fid="${esc(f.id)}"><div class="ph">${t("loadingFile")}</div><figcaption><span title="${esc(f.name)}">${esc(f.name)}</span><button class="btn small" data-act="dlFile" data-fid="${esc(f.id)}">${t("download")}</button></figcaption></figure>`).join("")}</div>`:ns}</dd>
+  </dl>
+  <div class="stamp">${t("contributedBy")}: ${esc(S.profile.name)}<br>${t("registered")} ${fmtStamp(i.createdAt)}${i.updatedAt&&i.updatedAt!==i.createdAt?`<br>${t("updated")} ${fmtStamp(i.updatedAt)}`:""}</div></section>`;
+}
+async function hydrateMedia(){
+ const i=S.incidents.find(x=>x.id===S.detailId); if(!i) return;
+ for(const f of i.files||[]){
+  const fig=document.querySelector(`figure[data-fid="${CSS.escape(f.id)}"]`); if(!fig) continue;
+  try{
+   const u=await fileUrl(f); const ph=fig.querySelector(".ph"); if(!u||!ph) continue;
+   const k=kind(f.type,f.name); let el;
+   if(k==="img"){el=document.createElement("img");el.alt=f.name;}
+   else if(k==="video"){el=document.createElement("video");el.controls=true;el.playsInline=true;}
+   else if(k==="audio"){el=document.createElement("audio");el.controls=true;}
+   else { ph.textContent=extOf(f.name).toUpperCase(); continue; }
+   el.src=u; ph.replaceWith(el);
+  }catch(e){}
+ }
+}
+
+/* ---------- Informe ---------- */
+function stats(){
+ const list=[...S.incidents].sort((a,b)=>sortKey(a).localeCompare(sortKey(b)));
+ const byCat={}, byAuthor={};
+ list.forEach(i=>{(i.categories||[]).forEach(c=>byCat[c]=(byCat[c]||0)+1); const a=(i.authorName||"").trim(); if(a){const k=norm(a); byAuthor[k]=byAuthor[k]||{name:a,n:0}; byAuthor[k].n++;}});
+ return {list,byCat,byAuthor:Object.values(byAuthor).sort((a,b)=>b.n-a.n),withW:list.filter(i=>(i.witnesses||[]).length).length,withF:list.filter(i=>(i.files||[]).length).length,dated:list.filter(isDated),undated:list.filter(i=>!isDated(i)),get fromI(){return this.dated[0]},get toI(){return this.dated[this.dated.length-1]}};
+}
+function viewReport(){
+ if(!S.incidents.length) return `<div class="empty"><h2>${t("reportTitle")}</h2><p class="muted">${t("noData")}</p></div>`;
+ const s=stats(), max=Math.max(1,...Object.values(s.byCat)), maxA=Math.max(1,...s.byAuthor.map(a=>a.n)), rl=S.reportLang||S.lang;
+ return `<h2 style="font-size:1.3rem">${t("reportTitle")}</h2><p class="muted small-txt">${t("reportIntro")}</p>
+  <div class="stats"><div class="stat"><div class="n">${s.list.length}</div><div class="l">${t("total")}</div></div>
+   <div class="stat"><div class="n" style="font-size:.95rem;padding-top:4px">${s.fromI?periodStr(s.fromI):"—"}<br>${s.toI?periodStr(s.toI):""}</div><div class="l">${t("period")}</div></div>
+   <div class="stat"><div class="n">${s.withW}</div><div class="l">${t("withWitness")}</div></div>
+   <div class="stat"><div class="n">${s.withF}</div><div class="l">${t("withFiles")}</div></div></div>
+  <div class="section panel"><h3>${t("byCat")}</h3><ul class="bars">${CATS.filter(c=>s.byCat[c.id]).map(c=>`<li><span>${esc(c[S.lang][0])}</span><span class="track"><span class="fill" style="width:${s.byCat[c.id]/max*100}%;background:${c.color}"></span></span><b>${s.byCat[c.id]}</b></li>`).join("")}</ul></div>
+  ${s.byAuthor.length?`<div class="section panel"><h3>${t("byAuthor")}</h3><ul class="bars">${s.byAuthor.map(a=>`<li><span>${esc(a.name)}</span><span class="track"><span class="fill" style="width:${a.n/maxA*100}%;background:var(--accent)"></span></span><b>${a.n}</b></li>`).join("")}</ul></div>`:""}
+  <div class="section panel"><div class="field"><span class="lbl">${t("reportLang")}</span><div class="seg"><label><input type="radio" name="rl" data-act="rlang" value="es" ${rl==="es"?"checked":""}>Español</label><label><input type="radio" name="rl" data-act="rlang" value="fr" ${rl==="fr"?"checked":""}>Français</label></div></div>
+   <label class="check" style="margin:0 0 14px"><input type="checkbox" data-act="incOrig" ${S.includeOrig?"checked":""}>${t("includeOrig")}</label><button class="btn primary block" data-act="dlReport">${t("dlReport")}</button><p class="muted small-txt" style="margin-bottom:0">${t("printHint")}</p></div>`;
+}
+function reportDoc(lang){
+ const L=T[lang], s=stats(), ns=L.notSpecified, used=CATS.filter(c=>s.byCat[c.id]);
+ const txt=(i,f)=>{ const o=i.origLang||"es"; if(o===lang) return esc(i[f]); if(i[f+"_tr"]) return esc(i[f+"_tr"]) + (S.includeOrig?`<div class="orig"><span class="muted">${L.originalL[o]}:</span><br>${esc(i[f])}</div>`:""); return `${esc(i[f])} <i class="muted">${L.origNote[o]}</i>`; };
+ const anyTr = s.list.some(i=>(i.origLang||"es")!==lang && (i.description_tr||i.impact_tr));
+ const art=(i,label)=>`<article><h3>${label}. ${fmtWhen(i,lang)}</h3>
+  <p class="cats">${(i.categories||[]).map(id=>`<span style="border-color:${catById[id].hex};color:${catById[id].hex}">${esc(catById[id][lang][0])}</span>`).join(" ")}</p>
+  <table><tr><th>${L.author}</th><td>${esc(i.authorName||ns)}${i.authorRole?` (${esc(L.roles[i.authorRole]||"")})`:""}</td></tr>
+  ${i.dateClue?`<tr><th>${L.clueL}</th><td>${esc(i.dateClue)}</td></tr>`:""}
+  <tr><th>${L.place}</th><td>${esc(i.place||ns)}</td></tr>
+  <tr><th>${L.desc}</th><td class="pre">${txt(i,"description")}</td></tr>
+  ${i.impact?`<tr><th>${L.impact}</th><td class="pre">${txt(i,"impact")}</td></tr>`:""}
+  <tr><th>${L.witnessesL}</th><td>${(i.witnesses||[]).length?i.witnesses.map(w=>`${esc(w.name||"?")}${w.contact?`, ${esc(w.contact)}`:""}${w.willing?` (${esc(L.wWilling)} ${esc(L.willing[w.willing])})`:""}`).join("<br>"):ns}</td></tr>
+  ${i.reportedDone?`<tr><th>${L.reportedL}</th><td>${esc(i.reportedTo||ns)}${i.reportedDate?`, ${fmtDate(i.reportedDate,lang)}`:""}</td></tr>`:""}
+  <tr><th>${L.attachments}</th><td>${(i.files||[]).length?i.files.map(f=>esc(f.name)).join("<br>"):ns}</td></tr></table>
+  <p class="stamp">${L.contributedBy} ${esc(S.profile.name)}. ${L.registered} ${fmtStamp(i.createdAt,lang)}${i.updatedAt&&i.updatedAt!==i.createdAt?`. ${L.updated} ${fmtStamp(i.updatedAt,lang)}`:""}</p></article>`;
+ const rows = s.dated.map((i,n)=>art(i,n+1)).join("") + (s.undated.length?`<h2>${L.undatedTitle}</h2><p class="muted">${L.undatedNote}</p>${s.undated.map((i,n)=>art(i,"S"+(n+1))).join("")}`:"");
+ return `<!DOCTYPE html><html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${L.reportTitle}</title>
+<style>body{font-family:Georgia,"Times New Roman",serif;color:#132235;max-width:780px;margin:30px auto;padding:0 20px;line-height:1.5}h1{font-size:24px;margin:0 0 4px}h2{font-size:18px;margin-top:28px;border-bottom:2px solid #1D4F7C;padding-bottom:4px;color:#1D4F7C}h3{font-size:16px;margin:0 0 6px}
+article{border:1px solid #CCD7E2;border-radius:6px;padding:14px;margin:14px 0;page-break-inside:avoid}table{width:100%;border-collapse:collapse;font-size:14px}th{text-align:left;vertical-align:top;width:30%;color:#55657A;font-weight:normal;padding:4px 8px 4px 0}td{padding:4px 0}.pre{white-space:pre-wrap}
+.cats span{display:inline-block;border:1.5px solid;border-radius:4px;padding:1px 8px;font-size:12px;font-family:Arial,sans-serif;margin-right:4px}.stamp{font-size:12px;color:#55657A;margin:8px 0 0}.sum td,.sum th{border-bottom:1px solid #E3E9EF;padding:5px 8px 5px 0}.muted{color:#55657A;font-size:13px}.orig{margin-top:10px;padding-left:10px;border-left:2px solid #CCD7E2}</style></head><body>
+<h1>${L.reportTitle}</h1><p><b>${L.contributedBy} : ${esc(S.profile.name)}</b></p><p class="muted">${L.genOn} ${fmtStamp(new Date().toISOString(),lang)}. ${L.declaration}</p>
+<h2>${L.period}</h2><table class="sum"><tr><th>${L.period}</th><td>${s.fromI?`${periodStr(s.fromI,lang)} – ${periodStr(s.toI,lang)}`:"—"}</td></tr><tr><th>${L.total}</th><td>${s.list.length}</td></tr>${s.undated.length?`<tr><th>${L.undatedCount}</th><td>${s.undated.length}</td></tr>`:""}<tr><th>${L.withWitness}</th><td>${s.withW}</td></tr><tr><th>${L.withFiles}</th><td>${s.withF}</td></tr></table>
+<h2>${L.byCat}</h2><table class="sum">${used.map(c=>`<tr><th>${esc(c[lang][0])}</th><td>${s.byCat[c.id]}</td></tr>`).join("")}</table>
+${s.byAuthor.length?`<h2>${L.byAuthor}</h2><table class="sum">${s.byAuthor.map(a=>`<tr><th>${esc(a.name)}</th><td>${a.n} ${a.n>1?L.timesP:L.times}</td></tr>`).join("")}</table>`:""}
+<h2>${L.reportTitle}</h2>${rows}
+<h2>${L.legalRefs}</h2><table class="sum">${used.filter(c=>c.ref).map(c=>`<tr><th>${esc(c[lang][0])}</th><td>${esc(c.ref)}<br><span class="muted">${esc(c[lang][1])}</span></td></tr>`).join("")}</table>
+${anyTr?`<p class="muted">${L.trDisclaimer}</p>`:""}<p class="muted">${L.disclaimer}</p></body></html>`;
+}
+
+function viewBackup(){
+ const lb=S.profile.lastBackup;
+ return `<section class="panel"><h2>${t("backupTitle")}</h2><p class="muted">${t("backupText")}</p>
+  <p><b>${t("lastBackup")}:</b> ${lb?fmtStamp(lb):t("never")}</p>
+  <button class="btn primary block" data-act="backupNow" ${S.busy?"disabled":""}>💾 ${S.busy?t("saving"):t("dlBackup")}</button></section>
+  <section class="panel section"><h2>${t("restoreTitle")}</h2><p class="muted">${t("restoreText")}</p>
+  <button class="btn block" data-act="startRestore">📂 ${t("pickBackup")}</button></section>`;
+}
+
+function viewHelp(){
+ return `<section class="panel help"><h2>${t("helpTitle")}</h2><ul>${t("help").map(h=>`<li>${h}</li>`).join("")}</ul>
+  <h2 style="margin-top:18px">${t("whereTitle")}</h2><ul>${t("where").map(h=>`<li>${h}</li>`).join("")}</ul>
+  <h2 style="margin-top:18px">${t("privacyTitle")}</h2><ul>${t("privacy").map(h=>`<li>${h}</li>`).join("")}</ul>
+  <p class="muted small-txt">${t("disclaimer")}</p></section>
+  <section class="panel section"><h2>${t("cats")}</h2>${CATS.filter(c=>c.ref).map(c=>`<p><b><span class="dot" style="background:${c.color}"></span> ${esc(c[S.lang][0])}</b><br><span class="muted">${esc(c[S.lang][1])}</span><br><i class="muted small-txt">${esc(c.ref)}</i></p>`).join("")}</section>`;
+}
+
+/* =================== FORMULARIO =================== */
+function validate(upTo){ S.errors={}; const dm=S.draft.dateMode||"exact"; if(upTo>=1&&dm==="exact"&&!S.draft.date) S.errors.date=true; if(upTo>=1&&dm==="month"&&!S.draft.month) S.errors.month=true; if(upTo>=2&&!S.draft.description.trim()) S.errors.description=true; return !Object.keys(S.errors).length; }
+async function saveDraft(){
+ if(!validate(2)){ S.step=(S.errors.date||S.errors.month)?1:2; render(); return; }
+ const now=new Date().toISOString(), d=S.draft, ex=S.incidents.find(x=>x.id===d.id);
+ const inc={...d, id:d.id||rid("inc-"), createdAt:ex?.createdAt||now, updatedAt:now, witnesses:d.witnesses.filter(w=>(w.name||"").trim()||(w.contact||"").trim())};
+ if(inc.dateMode!=="exact"){ inc.date=""; inc.time=""; } else inc.dateClue="";
+ if(inc.dateMode!=="month") inc.month="";
+ const prev=S.incidents;
+ S.incidents = ex ? S.incidents.map(x=>x.id===inc.id?inc:x) : [...S.incidents, inc];
+ try{
+  await writeIncidents();
+  for(const fid of S.removedFiles){ try{await kvDel(fileKey(fid))}catch(e){} }
+  S.newFiles=[]; S.removedFiles=[]; S.draft=null; await clearDraftStore(); S.view="detail"; S.detailId=inc.id; render(); toast(t("saved"));
+ }catch(e){ S.incidents=prev; toast("Error"); }
+}
+async function cancelDraft(){
+ await clearDraftStore();
+ for(const fid of S.newFiles){ try{await kvDel(fileKey(fid))}catch(e){} }
+ S.newFiles=[]; S.removedFiles=[]; S.draft=null; S.trErr="";
+ S.view = S.editingId ? "detail" : "list"; render();
+}
+async function addFiles(list){
+ for(const file of list){
+  if(file.size>MAX){ toast(`${t("tooLarge")}: ${file.name}`); continue; }
+  S.saving++; render();
+  try{ const fid=await putFile(file); S.draft.files.push({id:fid,name:file.name,type:file.type||"",size:file.size,at:new Date().toISOString()}); S.newFiles.push(fid); }
+  catch(e){ toast("Error: "+file.name); }
+  S.saving--; render();
+ }
+}
+
+/* =================== EVENTOS =================== */
+document.addEventListener("click", async e=>{
+ const b=e.target.closest("[data-act]"); if(!b||b.tagName==="INPUT") return;
+ const a=b.dataset.act;
+ if(a==="lang"){ S.lang=b.dataset.v; try{localStorage.setItem("cq-lang",S.lang)}catch(e){} render(); }
+ else if(a==="togglePw"){
+  S.showPw=!S.showPw;
+  document.querySelectorAll("input.secret").forEach(x=>x.type=S.showPw?"text":"password");
+  document.querySelectorAll('[data-act="togglePw"]').forEach(x=>{x.textContent=S.showPw?t("hidePw"):t("showPw");x.setAttribute("aria-pressed",S.showPw);x.setAttribute("aria-label",S.showPw?t("hidePwA"):t("showPwA"));});
+ }
+ else if(a==="gateMode"){ S.gateMode=b.dataset.v; S.gateErr=""; render(); }
+ else if(a==="gateGo"){
+  const name=S.g.name, sec=S.g.sec, sec2=S.g.sec2;
+  S.gateErr="";
+  if(!name.trim()) S.gateErr=t("errName");
+  else if(sec.length<6) S.gateErr=t("errSecretLen");
+  else if(S.gateMode==="create"&&sec!==sec2) S.gateErr=t("errMatch");
+  if(S.gateErr){ render(); return; }
+  S.busy=true; render();
+  try{
+   const r = S.gateMode==="create" ? await createBook(name,sec) : await openBook(name,sec);
+   S.profile=r.profile; S.key=r.key; await loadIncidents(); await loadPending(); S.view="list"; S.filter="all"; S.g={name:"",sec:"",sec2:"",rsec:""}; S.showPw=false; bumpLock();
+  }catch(err){ S.gateErr = err==="exists"?t("errExists"):err==="nobook"?t("errNoBook"):err==="wrong"?t("errWrong"):t("errNoIdb"); }
+  S.busy=false; render();
+ }
+ else if(a==="toRestore"){ S.view="restore"; S.restore=null; S.restoreErr=""; render(); }
+ else if(a==="toGate"){ S.view="gate"; S.restore=null; render(); }
+ else if(a==="lock"){ await lock(t("locked")); }
+ else if(a==="tab"){ if(S.view==="form"){ await parkDraft(); toast(t("draftKept")); } S.view=b.dataset.v; S.restore=null; render(); window.scrollTo(0,0); }
+ else if(a==="filter"){ S.filter=b.dataset.v; render(); }
+ else if(a==="new"){ if(!(await takeOverPending())) return; S.draft=blankDraft(); S.editingId=null; S.step=1; S.errors={}; S.trErr=""; S.view="form"; render(); window.scrollTo(0,0); }
+ else if(a==="detail"){ S.detailId=b.dataset.id; S.view="detail"; render(); window.scrollTo(0,0); }
+ else if(a==="edit"){ if(!(await takeOverPending())) return; const i=S.incidents.find(x=>x.id===b.dataset.id); S.draft=JSON.parse(JSON.stringify({...blankDraft(),...i})); S.editingId=i.id; S.step=1; S.errors={}; S.trErr=""; S.view="form"; render(); window.scrollTo(0,0); }
+ else if(a==="del"){ const i=S.incidents.find(x=>x.id===b.dataset.id); if(i&&confirm(t("confirmDel"))){ S.incidents=S.incidents.filter(x=>x.id!==i.id); await writeIncidents(); for(const f of i.files||[]){try{await kvDel(fileKey(f.id))}catch(e){}} S.view="list"; render(); toast(t("deleted")); } }
+ else if(a==="next"){ if(validate(S.step)) S.step++; render(); window.scrollTo(0,0); }
+ else if(a==="prev"){ S.step--; S.errors={}; render(); window.scrollTo(0,0); }
+ else if(a==="cancel"){ const d=S.draft; const has=d&&((d.description||"").trim()||(d.impact||"").trim()||d.files.length||d.witnesses.length); if(!has||confirm(t("cancelConfirm"))) await cancelDraft(); }
+ else if(a==="resume"){ const p=S.pending; if(p){ S.draft=p.draft; S.step=p.step||1; S.editingId=p.editingId||null; S.newFiles=p.newFiles||[]; S.removedFiles=p.removedFiles||[]; S.errors={}; S.trErr=""; S.pending=null; S.view="form"; render(); window.scrollTo(0,0); } }
+ else if(a==="discard"){ if(confirm(t("cancelConfirm"))){ await discardPending(); render(); toast(t("discardDone")); } }
+ else if(a==="save"){ await saveDraft(); }
+ else if(a==="translateAll"){ await translateAll(); }
+ else if(a==="addWitness"){ S.draft.witnesses.push({name:"",contact:"",willing:""}); render(); }
+ else if(a==="rmWitness"){ S.draft.witnesses.splice(+b.dataset.i,1); render(); }
+ else if(a==="pick"){ document.getElementById("f-files").click(); }
+ else if(a==="rmFile"){ const [f]=S.draft.files.splice(+b.dataset.i,1); if(f){ if(S.newFiles.includes(f.id)){ try{await kvDel(fileKey(f.id))}catch(e){} S.newFiles=S.newFiles.filter(x=>x!==f.id);} else S.removedFiles.push(f.id);} render(); }
+ else if(a==="dlFile"){ const i=S.incidents.find(x=>x.id===S.detailId); const f=i&&i.files.find(x=>x.id===b.dataset.fid); if(f){ const bl=await getFileBlob(f); if(bl) await saveFile(f.name,bl); } }
+ else if(a==="dlReport"){ const rl=S.reportLang||S.lang; await saveFile(`${rl==="fr"?"rapport":"informe"}-${new Date().toISOString().slice(0,10)}.html`, new Blob([reportDoc(rl)],{type:"text/html"})); }
+ else if(a==="backupNow"){ await doBackup(); }
+ else if(a==="startRestore"){ S.view="restore"; S.restore=null; S.restoreErr=""; render(); }
+ else if(a==="pickBackup"){ document.getElementById("f-restore").click(); }
+ else if(a==="doRestore"){
+  const sec=S.g.rsec; S.busy=true; S.restoreErr=""; render();
+  try{ await applyRestore(sec); S.g={name:"",sec:"",sec2:"",rsec:""}; S.showPw=false; toast(t("restored")); }
+  catch(err){ if(err!=="cancel") S.restoreErr = err==="wrong"?t("errWrong"):t("badBackup"); }
+  S.busy=false; render();
+ }
+});
+document.addEventListener("input", e=>{
+ const el=e.target;
+ if(el.dataset.g){ S.g[el.dataset.g]=el.value; return; }
+ if(!S.draft) return;
+ if(el.dataset.bind && el.type!=="checkbox" && el.type!=="radio") S.draft[el.dataset.bind]=el.value;
+ else if(el.dataset.w!==undefined && el.type!=="radio") S.draft.witnesses[+el.dataset.w][el.dataset.wf]=el.value;
+ queueDraftSave();
+});
+document.addEventListener("change", e=>{
+ const el=e.target;
+ if(el.dataset.act==="rlang"){ S.reportLang=el.value; return; }
+ if(el.dataset.act==="incOrig"){ S.includeOrig=el.checked; return; }
+ if(el.id==="f-files"){ addFiles([...el.files]); el.value=""; return; }
+ if(el.id==="f-restore"){ if(el.files[0]) readBackupFile(el.files[0]); el.value=""; return; }
+ if(!S.draft) return;
+ if(el.dataset.bind && el.type==="checkbox"){ S.draft[el.dataset.bind]=el.checked; if(el.dataset.bind==="reportedDone") render(); }
+ else if(el.dataset.bind && el.type==="radio"){ S.draft[el.dataset.bind]=el.value; if(el.dataset.bind==="origLang"||el.dataset.bind==="dateMode") render(); }
+ else if(el.dataset.w!==undefined && el.type==="radio") S.draft.witnesses[+el.dataset.w][el.dataset.wf]=el.value;
+ else if(el.dataset.cat){ const c=el.dataset.cat; S.draft.categories = el.checked ? [...new Set([...S.draft.categories,c])] : S.draft.categories.filter(x=>x!==c); }
+ if(S.draft) queueDraftSave();
+});
+document.addEventListener("keydown", e=>{ if(e.key==="Enter" && (e.target.id==="g-sec"||e.target.id==="g-sec2"||e.target.id==="g-name")) document.querySelector('[data-act="gateGo"]')?.click(); });
+
+/* =================== INICIO =================== */
+render();
+if(window.claude && typeof window.claude.use==="function"){
+ window.claude.use("downloads").then(n=>{downloadsNs=n;}).catch(()=>{});
+ window.claude.use("sample").then(n=>{sampleNs=n; if(S.view==="form") render();}).catch(()=>{});
+}
+})();
+</script>
+</body>
+</html>
