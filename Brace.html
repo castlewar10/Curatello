@@ -369,6 +369,8 @@ const catById = Object.fromEntries(CATS.map(c=>[c.id,c]));
 const MAX = 20*1024*1024;
 const LOCK_MS = 5*60*1000;
 const WEEK = 7*24*3600*1000;
+const QUICK_AUTHORS = ["Romain Sert","Julien Fevre"];
+const QUICK_WITNESSES = ["Amandine Pays","Joselyne Barranque","Julien Fevre"];
 
 /* =================== ESTADO =================== */
 const S = {
@@ -675,7 +677,7 @@ function viewForm(){
    ${d.dateMode==="month"?`<div class="field"><label for="f-month">${t("monthL")} *</label><input type="month" id="f-month" data-bind="month" value="${esc(d.month)}" placeholder="2026-03">${S.errors.month?`<div class="err">${t("needMonth")}</div>`:""}</div>`:""}
    ${d.dateMode!=="exact"?`<div class="field"><label for="f-clue">${t("clue")}</label><p class="hint">${t("clueHint")}</p><input type="text" id="f-clue" data-bind="dateClue" value="${esc(d.dateClue)}"></div>`:""}
    <div class="field"><label for="f-place">${t("place")}</label><p class="hint">${t("placeHint")}</p><input type="text" id="f-place" data-bind="place" value="${esc(d.place)}"></div>
-   <div class="field"><label for="f-author">${t("author")}</label><p class="hint">${t("authorHint")}</p><input type="text" id="f-author" data-bind="authorName" value="${esc(d.authorName)}"></div>
+   <div class="field"><label for="f-author">${t("author")}</label><p class="hint">${t("authorHint")}</p><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px">${QUICK_AUTHORS.map(n=>{const on=norm(d.authorName||"")===norm(n);return `<button type="button" class="chip" data-act="quickAuthor" data-v="${esc(n)}" aria-pressed="${on}">${on?"✓":"＋"} ${esc(n)}</button>`}).join("")}</div><input type="text" id="f-author" data-bind="authorName" value="${esc(d.authorName)}"></div>
    <div class="field"><span class="lbl">${t("role")}</span><div class="seg">${Object.entries(t("roles")).map(([k,v])=>`<label><input type="radio" name="role" data-bind="authorRole" value="${k}" ${d.authorRole===k?"checked":""}>${v}</label>`).join("")}</div></div>`;
  } else if(st===2){
   f=`<div class="field"><span class="lbl">${t("writeLang")}</span><div class="seg"><label><input type="radio" name="olang" data-bind="origLang" value="es" ${d.origLang==="es"?"checked":""}>Español</label><label><input type="radio" name="olang" data-bind="origLang" value="fr" ${d.origLang==="fr"?"checked":""}>Français</label></div></div>
@@ -684,6 +686,7 @@ function viewForm(){
    ${sampleNs?`<button class="btn block" data-act="translateAll" ${S.trAll?"disabled":""}>🌐 ${S.trAll?t("translating"):t("trTo")[otherL(d.origLang||"es")]}</button><p class="muted small-txt">ℹ️ ${t("trNote")}</p>`:""}${S.trErr?`<p class="err">${esc(S.trErr)}</p>`:""}`;
  } else if(st===3){
   f=`<div class="field"><span class="lbl">${t("witnesses")}</span><p class="hint">${t("witnessHint")}</p>
+   <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">${QUICK_WITNESSES.map(n=>{const on=d.witnesses.some(w=>norm(w.name||"")===norm(n));return `<button type="button" class="chip" data-act="quickWitness" data-v="${esc(n)}" aria-pressed="${on}">${on?"✓":"＋"} ${esc(n)}</button>`}).join("")}</div>
    ${d.witnesses.map((w,i)=>`<div class="witness"><div class="row2"><div><label class="hint" for="w-n${i}">${t("wName")}</label><input type="text" id="w-n${i}" data-w="${i}" data-wf="name" value="${esc(w.name)}"></div><div><label class="hint" for="w-c${i}">${t("wContact")}</label><input type="text" id="w-c${i}" data-w="${i}" data-wf="contact" value="${esc(w.contact)}"></div></div>
     <div class="hint">${t("wWilling")}</div><div class="seg" style="margin-bottom:8px">${Object.entries(t("willing")).map(([k,v])=>`<label><input type="radio" name="wil${i}" data-w="${i}" data-wf="willing" value="${k}" ${w.willing===k?"checked":""}>${v}</label>`).join("")}</div>
     <button class="btn small" data-act="rmWitness" data-i="${i}">${t("remove")}</button></div>`).join("")}
@@ -882,6 +885,8 @@ document.addEventListener("click", async e=>{
  else if(a==="discard"){ if(confirm(t("cancelConfirm"))){ await discardPending(); render(); toast(t("discardDone")); } }
  else if(a==="save"){ await saveDraft(); }
  else if(a==="translateAll"){ await translateAll(); }
+ else if(a==="quickAuthor"){ const n=b.dataset.v; S.draft.authorName = norm(S.draft.authorName||"")===norm(n) ? "" : n; render(); }
+ else if(a==="quickWitness"){ const n=b.dataset.v, k=d=>norm(d.name||"")===norm(n); if(S.draft.witnesses.some(k)) S.draft.witnesses=S.draft.witnesses.filter(w=>!k(w)); else S.draft.witnesses.push({name:n,contact:"",willing:""}); render(); }
  else if(a==="addWitness"){ S.draft.witnesses.push({name:"",contact:"",willing:""}); render(); }
  else if(a==="rmWitness"){ S.draft.witnesses.splice(+b.dataset.i,1); render(); }
  else if(a==="pick"){ document.getElementById("f-files").click(); }
