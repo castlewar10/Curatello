@@ -340,6 +340,7 @@ const T = {
 };
 
 Object.assign(T.es,{
+ trNoteG:"Se traduce con Google Traductor a través de tu cartero. Revisa la versión en francés y corrige lo que haga falta.", trNeedMail:"Para traducir al francés, activa primero el envío automático (pestaña Copia).",
  pickAudio:"Añadir audio", audioNoteL:"🎙️ ¿Existe un audio que no has subido? (opcional)", audioNoteHint:"Ej.: «nota de voz en WhatsApp de Romain, 12/10, 14h05», «grabación en mi móvil, 2 min».", audioNoteR:"Audio mencionado (no adjunto)",
  mailTitle:"✉️ Envío automático a tu email", mailTo:"Se envía a:",
  mailOn:"Activado. Cada copia y cada informe que descargues se envía también a tu email y se guarda en tu Google Drive (carpeta «Brace»).",
@@ -350,6 +351,7 @@ Object.assign(T.es,{
  mailTestOk:"✉️ Prueba enviada. Mira tu bandeja de entrada.", mailSaved:"Dirección guardada",
 });
 Object.assign(T.fr,{
+ trNoteG:"Traduit avec Google Traduction via ton facteur. Relis la version et corrige si besoin.", trNeedMail:"Pour traduire, active d'abord l'envoi automatique (onglet Sauvegarde).",
  pickAudio:"Ajouter un audio", audioNoteL:"🎙️ Existe-t-il un audio non ajouté ? (facultatif)", audioNoteHint:"Ex. : « vocal WhatsApp de Romain, 12/10, 14h05 », « enregistrement sur mon téléphone, 2 min ».", audioNoteR:"Audio mentionné (non joint)",
  mailTitle:"✉️ Envoi automatique par e-mail", mailTo:"Envoyé à :",
  mailOn:"Activé. Chaque sauvegarde et chaque rapport téléchargé est aussi envoyé à ton e-mail et rangé dans ton Google Drive (dossier « Brace »).",
@@ -611,6 +613,10 @@ async function saveFile(filename, blob){
 /* =================== TRADUCCIÓN =================== */
 const LNAME={es:"español",fr:"francés"};
 const otherL = l => l==="es"?"fr":"es";
+async function translateViaMail(text, src, dst){
+ const r=await fetch(mailUrl,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({token:MAIL_TOKEN, kind:"translate", text, src, dst}),redirect:"follow"});
+ const j=await r.json(); if(!j.ok||!j.text) throw 0; return j.text.trim();
+}
 async function translateAll(){
  const d=S.draft, src=d.origLang||"es", dst=otherL(src);
  const fields=["description","impact"].filter(f=>(d[f]||"").trim());
@@ -619,8 +625,8 @@ async function translateAll(){
  try{
   for(const f of fields){
    const prompt = "Traduce al "+LNAME[dst]+" el siguiente texto escrito en "+LNAME[src]+". Es un relato personal de un incidente en el trabajo, escrito en primera persona. Conserva exactamente el sentido, los hechos, las fechas y el tono. Las citas entre comillas deben traducirse fielmente y mantener las comillas. No añadas, no resumas, no suavices, no comentes. Devuelve únicamente la traducción, sin ningún texto adicional.\n\nTexto:\n" + d[f].trim();
-   const r = await sampleNs(prompt, {modelTier:"default", cache:false});
-   d[f+"_tr"]=(r.text||"").trim();
+   if(sampleNs){ const r = await sampleNs(prompt, {modelTier:"default", cache:false}); d[f+"_tr"]=(r.text||"").trim(); }
+   else { d[f+"_tr"] = await translateViaMail(d[f].trim(), src, dst); }
   }
  }catch(e){ if(e && e.code==="not_granted") sampleNs=null; S.trErr=t("trFail"); }
  S.trAll=false; render();
@@ -731,7 +737,7 @@ function viewForm(){
   f=`<div class="field"><span class="lbl">${t("writeLang")}</span><div class="seg"><label><input type="radio" name="olang" data-bind="origLang" value="es" ${d.origLang==="es"?"checked":""}>Español</label><label><input type="radio" name="olang" data-bind="origLang" value="fr" ${d.origLang==="fr"?"checked":""}>Français</label></div></div>
    <div class="field"><label for="f-desc">${t("desc")} *</label><p class="hint">${t("descHint")}</p><textarea id="f-desc" data-bind="description" style="min-height:190px">${esc(d.description)}</textarea>${S.errors.description?`<div class="err">${t("needDesc")}</div>`:""}${trBox("description")}</div>
    <div class="field"><label for="f-imp">${t("impact")}</label><p class="hint">${t("impactHint")}</p><textarea id="f-imp" data-bind="impact" style="min-height:90px">${esc(d.impact)}</textarea>${trBox("impact")}</div>
-   ${sampleNs?`<button class="btn block" data-act="translateAll" ${S.trAll?"disabled":""}>🌐 ${S.trAll?t("translating"):t("trTo")[otherL(d.origLang||"es")]}</button><p class="muted small-txt">ℹ️ ${t("trNote")}</p>`:""}${S.trErr?`<p class="err">${esc(S.trErr)}</p>`:""}`;
+   ${(sampleNs||mailUrl)?`<button class="btn block" data-act="translateAll" ${S.trAll?"disabled":""}>🌐 ${S.trAll?t("translating"):t("trTo")[otherL(d.origLang||"es")]}</button><p class="muted small-txt">ℹ️ ${sampleNs?t("trNote"):t("trNoteG")}</p>`:`<p class="muted small-txt">ℹ️ ${t("trNeedMail")}</p>`}${S.trErr?`<p class="err">${esc(S.trErr)}</p>`:""}`;
  } else if(st===3){
   f=`<div class="field"><span class="lbl">${t("witnesses")}</span><p class="hint">${t("witnessHint")}</p>
    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">${QUICK_WITNESSES.map(n=>{const on=d.witnesses.some(w=>norm(w.name||"")===norm(n));return `<button type="button" class="chip" data-act="quickWitness" data-v="${esc(n)}" aria-pressed="${on}">${on?"✓":"＋"} ${esc(n)}</button>`}).join("")}</div>
