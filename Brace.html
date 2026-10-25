@@ -172,6 +172,7 @@ textarea{min-height:140px;resize:vertical}
 <div class="wrap" id="app"><p class="muted">…</p></div>
 <div id="toast" class="toast" hidden role="status"></div>
 <input type="file" id="f-files" multiple hidden>
+<input type="file" id="f-audio" accept="audio/*,.opus,.ogg,.m4a,.mp3,.aac,.wav,.amr" multiple hidden>
 <input type="file" id="f-restore" accept=".json,application/json" hidden>
 
 <script>
@@ -338,6 +339,27 @@ const T = {
  }
 };
 
+Object.assign(T.es,{
+ pickAudio:"Añadir audio", audioNoteL:"🎙️ ¿Existe un audio que no has subido? (opcional)", audioNoteHint:"Ej.: «nota de voz en WhatsApp de Romain, 12/10, 14h05», «grabación en mi móvil, 2 min».", audioNoteR:"Audio mencionado (no adjunto)",
+ mailTitle:"✉️ Envío automático a tu email", mailTo:"Se envía a:",
+ mailOn:"Activado. Cada copia y cada informe que descargues se envía también a tu email y se guarda en tu Google Drive (carpeta «Brace»).",
+ mailOff:"Pega aquí la dirección del «cartero» de Google (termina en /exec). Solo hay que hacerlo una vez.",
+ mailUrlL:"Dirección del cartero (URL /exec)", mailSave:"Guardar", mailTest:"Probar envío", mailChange:"Cambiar dirección",
+ mailBadUrl:"Esa dirección no parece correcta. Debe empezar por https://script.google.com/ y terminar en /exec.",
+ mailSending:"Enviando a tu email…", mailSent:"✉️ Enviado a tu email", mailFail:"⚠️ No se pudo enviar al email. El archivo sí se descargó.",
+ mailTestOk:"✉️ Prueba enviada. Mira tu bandeja de entrada.", mailSaved:"Dirección guardada",
+});
+Object.assign(T.fr,{
+ pickAudio:"Ajouter un audio", audioNoteL:"🎙️ Existe-t-il un audio non ajouté ? (facultatif)", audioNoteHint:"Ex. : « vocal WhatsApp de Romain, 12/10, 14h05 », « enregistrement sur mon téléphone, 2 min ».", audioNoteR:"Audio mentionné (non joint)",
+ mailTitle:"✉️ Envoi automatique par e-mail", mailTo:"Envoyé à :",
+ mailOn:"Activé. Chaque sauvegarde et chaque rapport téléchargé est aussi envoyé à ton e-mail et rangé dans ton Google Drive (dossier « Brace »).",
+ mailOff:"Colle ici l'adresse du « facteur » Google (elle finit par /exec). À faire une seule fois.",
+ mailUrlL:"Adresse du facteur (URL /exec)", mailSave:"Enregistrer", mailTest:"Tester l'envoi", mailChange:"Changer l'adresse",
+ mailBadUrl:"Cette adresse ne semble pas correcte. Elle doit commencer par https://script.google.com/ et finir par /exec.",
+ mailSending:"Envoi à ton e-mail…", mailSent:"✉️ Envoyé à ton e-mail", mailFail:"⚠️ Envoi par e-mail impossible. Le fichier a bien été téléchargé.",
+ mailTestOk:"✉️ Test envoyé. Regarde ta boîte de réception.", mailSaved:"Adresse enregistrée",
+});
+
 /* =================== CATEGORÍAS =================== */
 const CATS = [
  {id:"moral", color:"var(--c-moral)", hex:"#5257C2", ref:"Code du travail, art. L1152-1",
@@ -358,6 +380,9 @@ const CATS = [
  {id:"repr", color:"var(--c-repr)", hex:"#3949AB", ref:"Code du travail, art. L1152-2, L1153-2, L1153-3",
   es:["Represalias","Sanción, cambio de horario o peor trato por haber denunciado o testificado sobre un acoso. Está prohibido."],
   fr:["Représailles","Sanction, changement d'horaires ou mauvais traitement pour avoir dénoncé ou témoigné d'un harcèlement. C'est interdit."]},
+ {id:"micro", color:"#8E44AD", hex:"#8E44AD", ref:"Code du travail, art. L1152-1 (si se repite de forma abusiva)",
+  es:["Micromanagement","Control excesivo y constante de cada gesto o tarea: vigilancia continua, correcciones sin motivo, no dejarte autonomía. Si se repite y te degrada, puede formar parte de un acoso moral."],
+  fr:["Micromanagement","Contrôle excessif et permanent de chaque geste ou tâche : surveillance continue, corrections sans raison, aucune autonomie. Répété de façon abusive, cela peut participer à un harcèlement moral."]},
  {id:"droits", color:"var(--c-droits)", hex:"#7E6A00", ref:"Code du travail ; Convention collective IDCC 1501",
   es:["Incumplimiento de derechos laborales","Horarios, pausas, salario, descansos, vacaciones… Si se repite de forma dirigida, puede formar parte de un acoso moral."],
   fr:["Non-respect des droits","Horaires, pauses, salaire, repos, congés… Répété de façon ciblée, cela peut participer à un harcèlement moral."]},
@@ -467,6 +492,7 @@ async function rekey(profile, oldKey){
 }
 async function enterBook(r){ S.profile=r.profile; S.key=r.key; await loadIncidents(); await loadPending(); S.view="list"; S.filter="all"; S.g={name:"",sec:"",sec2:"",rsec:""}; S.showPw=false; }
 async function start(){
+ await loadMailCfg();
  try{ const r=await autoOpen(); if(r) await enterBook(r); else S.view="gate"; }
  catch(e){ S.view="gate"; S.gateErr=t("errNoIdb"); }
  render();
@@ -502,6 +528,26 @@ async function lock(msg){
 let lockTimer;
 function bumpLock(){}
 
+/* =================== ENVÍO POR EMAIL =================== */
+const MAIL_TO="dmcastillo.pro@gmail.com", MAIL_TOKEN="brc-oupQxMNO8M6ayTkSS1e6gU-i";
+let mailUrl="", mailEditing=false, mailDraft="";
+async function loadMailCfg(){ try{ mailUrl=(await kvGet("cfg:mailUrl"))||""; }catch(e){ mailUrl=""; } }
+const validMailUrl = u => /^https:\/\/script\.google\.com\/.+\/exec$/.test(u.trim());
+async function sendMail(kind, filename, mime, text){
+ if(!mailUrl) return null;
+ toast(t("mailSending"));
+ const body=JSON.stringify({token:MAIL_TOKEN, kind, filename, mime, text, lang:S.lang, sentAt:new Date().toISOString()});
+ try{
+  const r=await fetch(mailUrl,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body,redirect:"follow"});
+  const j=await r.json().catch(()=>({ok:r.ok}));
+  if(!j.ok) throw 0;
+  toast(kind==="test"?t("mailTestOk"):t("mailSent")); return true;
+ }catch(e){
+  try{ await fetch(mailUrl,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body}); toast(kind==="test"?t("mailTestOk"):t("mailSent")); return true; }
+  catch(e2){ toast(t("mailFail")); return false; }
+ }
+}
+
 /* =================== COPIA / RESTAURACIÓN =================== */
 const box64 = b => ({iv:b64(b.iv), ct:b64(b.ct)});
 const unbox64 = b => ({iv:unb64(b.iv), ct:unb64(b.ct)});
@@ -515,8 +561,10 @@ async function doBackup(){
  S.busy=true; render();
  try{
   const json=await buildBackup();
-  const ok=await saveFile(`cuaderno-copia-${new Date().toISOString().slice(0,10)}.json`, new Blob([json],{type:"application/json"}));
-  if(ok){ S.profile.lastBackup=new Date().toISOString(); await kvSet("p:"+S.profile.id, S.profile); }
+  const fname=`cuaderno-copia-${new Date().toISOString().slice(0,10)}.json`;
+  const ok=await saveFile(fname, new Blob([json],{type:"application/json"}));
+  const sent=await sendMail("backup", fname, "application/json", json);
+  if(ok||sent){ S.profile.lastBackup=new Date().toISOString(); await kvSet("p:"+S.profile.id, S.profile); }
  }catch(e){ toast(t("dlFail")); }
  S.busy=false; render();
 }
@@ -692,8 +740,9 @@ function viewForm(){
     <button class="btn small" data-act="rmWitness" data-i="${i}">${t("remove")}</button></div>`).join("")}
    <button class="btn small" data-act="addWitness">＋ ${t("addWitness")}</button></div>
    <div class="field"><span class="lbl">${t("files")}</span><p class="hint">${t("filesHint")}</p>
-   <div class="drop"><button class="btn" data-act="pick">📎 ${t("pickFiles")}</button>${S.saving?`<p class="muted">${t("saving")} (${S.saving})</p>`:""}</div>
+   <div class="drop"><div class="btn-row" style="justify-content:center"><button class="btn" data-act="pick">📎 ${t("pickFiles")}</button><button class="btn" data-act="pickAudio">🎙️ ${t("pickAudio")}</button></div>${S.saving?`<p class="muted">${t("saving")} (${S.saving})</p>`:""}</div>
    <ul class="files">${d.files.map((fl,i)=>`<li><span class="badge">${{img:"🖼️",video:"🎬",audio:"🎙️"}[kind(fl.type,fl.name)]||esc(extOf(fl.name).toUpperCase().slice(0,4))}</span><span class="fname">${esc(fl.name)}</span><button class="btn small" data-act="rmFile" data-i="${i}">${t("remove")}</button></li>`).join("")}</ul></div>
+   <div class="field"><label for="f-anote">${t("audioNoteL")}</label><p class="hint">${t("audioNoteHint")}</p><input type="text" id="f-anote" data-bind="audioNote" value="${esc(d.audioNote||"")}"></div>
    <div class="field"><label class="check" style="font-weight:700"><input type="checkbox" data-bind="reportedDone" ${d.reportedDone?"checked":""}>${t("reported")}</label>
    ${d.reportedDone?`<div class="row2" style="margin-top:10px"><div><label class="hint" for="f-rto">${t("reportedTo")}</label><input type="text" id="f-rto" data-bind="reportedTo" value="${esc(d.reportedTo)}" placeholder="${esc(t("reportedToHint"))}"></div><div><label class="hint" for="f-rd">${t("reportedDate")}</label><input type="date" id="f-rd" data-bind="reportedDate" value="${esc(d.reportedDate)}"></div></div>`:""}</div>`;
  } else {
@@ -724,6 +773,7 @@ function viewDetail(){
    <dt>${t("desc")}</dt><dd>${esc(i.description)}${i.description_tr?`<div class="fr"><b class="small-txt">${otherL(i.origLang).toUpperCase()}</b> ${esc(i.description_tr)}</div>`:""}</dd>
    ${i.impact?`<dt>${t("impact")}</dt><dd>${esc(i.impact)}${i.impact_tr?`<div class="fr"><b class="small-txt">${otherL(i.origLang).toUpperCase()}</b> ${esc(i.impact_tr)}</div>`:""}</dd>`:""}
    <dt>${t("witnesses")}</dt><dd>${(i.witnesses||[]).length?i.witnesses.map(w=>`• ${esc(w.name||"?")}${w.contact?`, ${esc(w.contact)}`:""}${w.willing?` (${esc(t("wWilling"))} ${esc(t("willing")[w.willing])})`:""}`).join("\n"):ns}</dd>
+   ${(i.audioNote||"").trim()?`<dt>${t("audioNoteR")}</dt><dd>🎙️ ${esc(i.audioNote)}</dd>`:""}
    ${i.reportedDone?`<dt>${t("reportedL")}</dt><dd>${esc(i.reportedTo||ns)}${i.reportedDate?`, ${fmtDate(i.reportedDate)}`:""}</dd>`:""}
    <dt>${t("files")}</dt><dd>${(i.files||[]).length?`<div class="media">${i.files.map(f=>`<figure data-fid="${esc(f.id)}"><div class="ph">${t("loadingFile")}</div><figcaption><span title="${esc(f.name)}">${esc(f.name)}</span><button class="btn small" data-act="dlFile" data-fid="${esc(f.id)}">${t("download")}</button></figcaption></figure>`).join("")}</div>`:ns}</dd>
   </dl>
@@ -779,7 +829,7 @@ function reportDoc(lang){
   ${i.impact?`<tr><th>${L.impact}</th><td class="pre">${txt(i,"impact")}</td></tr>`:""}
   <tr><th>${L.witnessesL}</th><td>${(i.witnesses||[]).length?i.witnesses.map(w=>`${esc(w.name||"?")}${w.contact?`, ${esc(w.contact)}`:""}${w.willing?` (${esc(L.wWilling)} ${esc(L.willing[w.willing])})`:""}`).join("<br>"):ns}</td></tr>
   ${i.reportedDone?`<tr><th>${L.reportedL}</th><td>${esc(i.reportedTo||ns)}${i.reportedDate?`, ${fmtDate(i.reportedDate,lang)}`:""}</td></tr>`:""}
-  <tr><th>${L.attachments}</th><td>${(i.files||[]).length?i.files.map(f=>esc(f.name)).join("<br>"):ns}</td></tr></table>
+  <tr><th>${L.attachments}</th><td>${(i.files||[]).length?i.files.map(f=>esc(f.name)).join("<br>"):ns}</td></tr>${(i.audioNote||"").trim()?`<tr><th>${L.audioNoteR}</th><td>${esc(i.audioNote)}</td></tr>`:""}</table>
   <p class="stamp">${S.profile.name?`${L.contributedBy} ${esc(S.profile.name)}. `:""}${L.registered} ${fmtStamp(i.createdAt,lang)}${i.updatedAt&&i.updatedAt!==i.createdAt?`. ${L.updated} ${fmtStamp(i.updatedAt,lang)}`:""}</p></article>`;
  const rows = s.dated.map((i,n)=>art(i,n+1)).join("") + (s.undated.length?`<h2>${L.undatedTitle}</h2><p class="muted">${L.undatedNote}</p>${s.undated.map((i,n)=>art(i,"S"+(n+1))).join("")}`:"");
  return `<!DOCTYPE html><html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${L.reportTitle}</title>
@@ -800,6 +850,11 @@ function viewBackup(){
  return `<section class="panel"><h2>${t("backupTitle")}</h2><p class="muted">${t("backupText")}</p>
   <p><b>${t("lastBackup")}:</b> ${lb?fmtStamp(lb):t("never")}</p>
   <button class="btn primary block" data-act="backupNow" ${S.busy?"disabled":""}>💾 ${S.busy?t("saving"):t("dlBackup")}</button></section>
+  <section class="panel section"><h2>${t("mailTitle")}</h2><p class="small-txt"><b>${t("mailTo")}</b> ${MAIL_TO}</p>
+  ${mailUrl&&!mailEditing?`<div class="banner resume" style="margin-bottom:12px"><span>✅ ${t("mailOn")}</span></div>
+   <div class="btn-row"><button class="btn primary" data-act="mailTest">${t("mailTest")}</button><button class="btn small" data-act="mailChange">${t("mailChange")}</button></div>`
+  :`<p class="muted small-txt">${t("mailOff")}</p><div class="field"><label for="mail-url">${t("mailUrlL")}</label><input type="text" id="mail-url" value="${esc(mailUrl)}" placeholder="https://script.google.com/macros/s/…/exec" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
+   <button class="btn primary block" data-act="mailSave">${t("mailSave")}</button>`}</section>
   <section class="panel section"><h2>${t("restoreTitle")}</h2><p class="muted">${t("restoreText")}</p>
   <button class="btn block" data-act="startRestore">📂 ${t("pickBackup")}</button></section>`;
 }
@@ -890,9 +945,13 @@ document.addEventListener("click", async e=>{
  else if(a==="addWitness"){ S.draft.witnesses.push({name:"",contact:"",willing:""}); render(); }
  else if(a==="rmWitness"){ S.draft.witnesses.splice(+b.dataset.i,1); render(); }
  else if(a==="pick"){ document.getElementById("f-files").click(); }
+ else if(a==="pickAudio"){ document.getElementById("f-audio").click(); }
  else if(a==="rmFile"){ const [f]=S.draft.files.splice(+b.dataset.i,1); if(f){ if(S.newFiles.includes(f.id)){ try{await kvDel(fileKey(f.id))}catch(e){} S.newFiles=S.newFiles.filter(x=>x!==f.id);} else S.removedFiles.push(f.id);} render(); }
  else if(a==="dlFile"){ const i=S.incidents.find(x=>x.id===S.detailId); const f=i&&i.files.find(x=>x.id===b.dataset.fid); if(f){ const bl=await getFileBlob(f); if(bl) await saveFile(f.name,bl); } }
- else if(a==="dlReport"){ const rl=S.reportLang||S.lang; await saveFile(`${rl==="fr"?"rapport":"informe"}-${new Date().toISOString().slice(0,10)}.html`, new Blob([reportDoc(rl)],{type:"text/html"})); }
+ else if(a==="dlReport"){ const rl=S.reportLang||S.lang, html=reportDoc(rl), fname=`${rl==="fr"?"rapport":"informe"}-${new Date().toISOString().slice(0,10)}.html`; await saveFile(fname, new Blob([html],{type:"text/html"})); await sendMail("report", fname, "text/html", html); }
+ else if(a==="mailSave"){ const u=(document.getElementById("mail-url")?.value||"").trim(); if(!validMailUrl(u)){ toast(t("mailBadUrl")); return; } mailUrl=u; mailEditing=false; try{ await kvSet("cfg:mailUrl",u); }catch(e){} toast(t("mailSaved")); render(); }
+ else if(a==="mailChange"){ mailEditing=true; render(); }
+ else if(a==="mailTest"){ await sendMail("test","prueba-brace.txt","text/plain","Brace: prueba de envío / test d'envoi — "+new Date().toLocaleString()); }
  else if(a==="backupNow"){ await doBackup(); }
  else if(a==="startRestore"){ S.view="restore"; S.restore=null; S.restoreErr=""; render(); }
  else if(a==="pickBackup"){ document.getElementById("f-restore").click(); }
@@ -917,6 +976,7 @@ document.addEventListener("change", e=>{
  const el=e.target;
  if(el.dataset.act==="rlang"){ S.reportLang=el.value; return; }
  if(el.dataset.act==="incOrig"){ S.includeOrig=el.checked; return; }
+ if(el.id==="f-audio"){ addFiles([...el.files]); el.value=""; return; }
  if(el.id==="f-files"){ addFiles([...el.files]); el.value=""; return; }
  if(el.id==="f-restore"){ if(el.files[0]) readBackupFile(el.files[0]); el.value=""; return; }
  if(!S.draft) return;
